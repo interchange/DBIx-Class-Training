@@ -54,6 +54,60 @@
 \begin{frame}{Extending Schema}
 \end{frame}
 
+\subsection{Helpers}
+\subsubsection{ResultSet Helpers}
+\begin{description}
+\item[Me] 
+simple exact way to set table aliases correctly in queries
+\item[Random] small random subset
+great for related product searches where you want a small 
+random subset of the results
+\item[CorrelateRelationship] 
+makes correlated subqueries really simple
+\end{description}
+
+\begin{frame}{ResultSet Helpers}
+\begin{description}
+\item[Me] correct table aliases
+\item[Random] small random subset
+\item[CorrelateRelationship]  
+\end{description}
+\end{frame}
+
+\subsubsection{Shortcuts}
+\begin{description}
+\item[AddColumns] 
+\item[Columns]
+\item[Distinct]
+\item[GroupBy] 
+\item[HRI]
+uses this all the time
+\item[HasRows] much faster than count for very large resultsets
+\item[Limit]
+\item[OrderBy]
+\item[Page]
+\item[Prefetch]
+\item[Rows]
+\item[Search::{Not}Like]
+\item[Search::{Not}Null] 
+\end{description}
+
+\subsubsection{Schema}
+\begin{description}
+\item[DateTime]
+much simpler query construction for DateTime inflated fields
+\item[QuoteNames] 
+forces quote\_names even if someone misses it in their 
+config yml - everyone should use this
+\end{description}
+
+\begin{frame}{Schema Helpers}
+\begin{description}
+\item[DateTime] DateTime inflated fields
+\item[QuoteNames] forces quote\_names
+\end{description}
+\end{frame}
+
 \section{Writing Tests}
 \begin{frame}{Writing Tests}
 \end{frame}
