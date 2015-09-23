@@ -51,3 +51,7 @@ $(HANDOUT_OUTPUTS): %-handout.pdf: %.tex
 # Remove unnecessary files
 clean:
 	-rm -f *.log *.aux *.out *.blg *.bbl *.nav *.snm *.toc
+
+# cleanup the pdf as well
+distclean: clean
+	-rm -f *.pdf
