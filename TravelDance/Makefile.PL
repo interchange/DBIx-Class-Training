@@ -8,27 +8,19 @@ my $eumm_version = $ExtUtils::MakeMaker::VERSION;
 $eumm_version =~ s/_//;
 
 WriteMakefile(
-    NAME         => 'TravelDance',
-    AUTHOR       => q{YOUR NAME <youremail@example.com>},
-    VERSION_FROM => 'lib/TravelDance.pm',
-    ABSTRACT     => 'YOUR APPLICATION ABSTRACT',
-    (
-        $eumm_version >= 6.3001
-        ? ( 'LICENSE' => 'perl' )
-        : ()
-    ),
-    PL_FILES  => {},
+    NAME                => 'TravelDance',
+    AUTHOR              => q{YOUR NAME <youremail@example.com>},
+    VERSION_FROM        => 'lib/TravelDance.pm',
+    ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
+    ($eumm_version >= 6.3001
+      ? ('LICENSE'=> 'perl')
+      : ()),
+    PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More'                    => 0,
-        'YAML'                          => 0,
-        'Class::Method::Modifiers'      => 0,
-        'Dancer2'                       => '0.162000',
-        'Dancer2::Plugin::DBIC'         => '0.0009',
-        'DBD::SQLite'                   => 0,
-        'DBIx::Class::Candy'            => '0.005000',
-        'DBIx::Class::PassphraseColumn' => 0,
-        'DBIx::Class::Timestamp'        => 0,
+        'Test::More' => 0,
+        'YAML'       => 0,
+        'Dancer2'     => 0.162000,
     },
-    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES    => 'TravelDance-*' },
+    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean               => { FILES => 'TravelDance-*' },
 );
