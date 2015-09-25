@@ -1,0 +1,5 @@
+environments/*.yml
+logs/*
+MYMETA.*
+Makefile
+public/img/uploads/*
