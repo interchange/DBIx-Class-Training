@@ -27,6 +27,7 @@ The following components are loaded:
 use TravelDance::Schema::Candy -components =>
   [qw(InflateColumn::DateTime PassphraseColumn TimeStamp)];
 
+use Class::Method::Modifiers;
 use DateTime;
 
 =head1 ACCESSORS
