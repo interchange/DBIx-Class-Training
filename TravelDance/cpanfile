@@ -1,6 +1,15 @@
-requires "Dancer2" => "0.162000";
+#!perl
+requires "Class::Method::Modifiers"      => "0";
+requires "Dancer2"                       => "0.162000";
+requires "Dancer2::Plugin::DBIC"         => "0.0009";
+requires "DBD::SQLite"                   => "0";
+requires "DBIx::Class::Candy"            => "0.005000";
+requires "DBIx::Class::PassphraseColumn" => "0";
+requires "DBIx::Class::TimeStamp"        => "0";
+requires "Locale::SubCountry"            => "0";
+requires "Moo"                           => "2.000002";
+requires "YAML"                          => "0";
 
-recommends "YAML"             => "0";
 recommends "URL::Encode::XS"  => "0";
 recommends "CGI::Deurl::XS"   => "0";
 recommends "HTTP::Parser::XS" => "0";
