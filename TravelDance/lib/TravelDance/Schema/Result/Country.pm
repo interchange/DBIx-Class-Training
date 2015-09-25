@@ -64,8 +64,22 @@ Composing relationships: L</locations> -> user
 
 =cut
 
-has_many users => "locations", "user";
+many_to_many users => "locations", "user";
 
 =head1 METHODS
+
+=head2 sqlt_deploy_hook
+
+Add index on L</name>.
+
+=cut
+
+sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+
+    $sqlt_table->add_index(name => 'idx_countries_name', fields => ['name']);
+}
+
+=cut
 
 1;

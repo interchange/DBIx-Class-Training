@@ -10,6 +10,7 @@ use warnings;
 use strict;
 
 use base 'DBIx::Class::Schema';
+use TravelDance::Schema::Populate::CountryLocale;
 
 =head1 COMPONENTS
 
@@ -24,6 +25,26 @@ The following components are currently loaded:
 =cut
 
 __PACKAGE__->load_components();
+
+=head1 METHODS
+
+=head2 deploy
+
+Override L<DBIx::Class::Schema/deploy> in order to populate the Country class
+using L<TravelDance::Schema::Populate::CountryLocale>.
+
+=cut
+
+sub deploy {
+    my $self = shift;
+    my $new  = $self->next::method(@_);
+
+    my $pop_country =
+      TravelDance::Schema::Populate::CountryLocale->new->records;
+
+    $self->resultset('Country')->populate($pop_country)
+      or die "Failed to populate Country";
+}
 
 =head1 NAMESPACES
 

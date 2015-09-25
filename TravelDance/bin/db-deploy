@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+use lib 'lib';
+
+set logger        => 'console';
+set logger_format => '%m';
+
+my $schema = schema;
+
+$schema->deploy( { add_drop_table => 1 } );
+

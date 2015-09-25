@@ -110,7 +110,7 @@ column password => {
         key_nul     => 1,
         salt_random => 1,
     },
-    passphrase_check_method => 'check_passphrase',
+    passphrase_check_method => 'check_password',
 };
 
 around 'check_password' => sub {
@@ -219,7 +219,7 @@ Composing relationships: L</locations> -> user
 
 =cut
 
-has_many countries => "locations", "country";
+many_to_many countries => "locations", "country";
 
 =head1 METHODS
 

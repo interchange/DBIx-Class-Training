@@ -101,7 +101,7 @@ column region => {
 =head2 country_iso_code
 
 Two character country ISO code. Foreign key constraint on
-L<Interchange6::Schema::Result::Country/country_iso_code> via L</country>
+L<TravelDance::Schema::Result::Country/country_iso_code> via L</country>
 relationship.
 
 A location B<usually> has a country but not if it is in a neutral zone like
@@ -160,14 +160,16 @@ belongs_to
 
 Type: belongs_to
 
-Related object: L<Interchange6::Schema::Result::User>
+Related object: L<TravelDance::Schema::Result::User>
 
 =cut
 
 belongs_to
-  user => "Interchange6::Schema::Result::User",
+  user => "TravelDance::Schema::Result::User",
   { users_id => "users_id" };
 
 =head1 METHODS
+
+=cut
 
 1;
