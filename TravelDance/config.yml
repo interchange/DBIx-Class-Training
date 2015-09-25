@@ -27,3 +27,14 @@ template: "simple"
 #       start_tag: '<%'
 #       end_tag:   '%>'
 
+plugins:
+  DBIC:
+    default:
+      dsn: dbi:SQLite:traveldance.db
+      schema_class: TravelDance::Schema
+      options:
+        RaiseError: 1
+        PrintError: 1
+        on_connect_call: 'use_foreign_keys'
+        quote_names: 1
+        sqlite_unicode: 1

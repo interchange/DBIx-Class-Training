@@ -20,6 +20,8 @@ WriteMakefile(
         'Test::More' => 0,
         'YAML'       => 0,
         'Dancer2'     => 0.162000,
+        'Dancer2::Plugin::DBIC' => '0.0009',
+        'DBD::SQLite' => 0,
         'DBIx::Class::Candy => '0.005000',
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
