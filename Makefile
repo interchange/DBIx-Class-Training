@@ -31,7 +31,7 @@ $(SLIDE_OUTPUTS): %-beamer.pdf: %.tex $(SLIDE_INPUTS)
 		pdflatex $(<:%.tex=%-beamer); \
     fi
 
-$(HANDOUT_OUTPUTS): %-handout.pdf: %.tex $(HANDOUT_INPUTS)
+$(HANDOUT_OUTPUTS): %-handout.pdf: %.tex $(HANDOUT_INPUTS) sponsors.tex
 # initial run
 	pdflatex $(<:%.tex=%-handout.tex)
 
