@@ -14,7 +14,7 @@ all: $(SLIDE_OUTPUTS) $(HANDOUT_OUTPUTS) clean
 $(PODFILE).html: $(PODFILE).pod
 	./pod2xhtml $(PODFILE).pod > $(PODFILE).html
 
-$(SLIDE_OUTPUTS): %-beamer.pdf: %.tex
+$(SLIDE_OUTPUTS): %-beamer.pdf: %.tex $(SLIDE_INPUTS)
 # initial run
 	pdflatex $(<:%.tex=%-beamer.tex)
 
@@ -22,7 +22,7 @@ $(SLIDE_OUTPUTS): %-beamer.pdf: %.tex
 	@if(grep "Citation" $(<:%.tex=%-beamer).log > /dev/null);\
     then \
         bibtext $(<:%.tex=%-beamer); \
-		pdflatex $(<:%.tex=%-beame); \
+		pdflatex $(<:%.tex=%-beamer); \
     fi
 
 # rerun if necessary
@@ -31,7 +31,7 @@ $(SLIDE_OUTPUTS): %-beamer.pdf: %.tex
 		pdflatex $(<:%.tex=%-beamer); \
     fi
 
-$(HANDOUT_OUTPUTS): %-handout.pdf: %.tex
+$(HANDOUT_OUTPUTS): %-handout.pdf: %.tex $(HANDOUT_INPUTS)
 # initial run
 	pdflatex $(<:%.tex=%-handout.tex)
 
@@ -39,7 +39,7 @@ $(HANDOUT_OUTPUTS): %-handout.pdf: %.tex
 	@if(grep "Citation" $(<:%.tex=%-handout).log > /dev/null);\
     then \
         bibtext $(<:%.tex=%-handout); \
-		pdflatex $(<:%.tex=%-beame); \
+		pdflatex $(<:%.tex=%-handout); \
     fi
 
 # rerun if necessary
