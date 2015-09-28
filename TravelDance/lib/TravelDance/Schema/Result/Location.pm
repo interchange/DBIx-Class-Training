@@ -164,9 +164,7 @@ Related object: L<TravelDance::Schema::Result::User>
 
 =cut
 
-belongs_to
-  user => "TravelDance::Schema::Result::User",
-  { users_id => "users_id" };
+belongs_to user => "TravelDance::Schema::Result::User", "users_id";
 
 =head1 METHODS
 

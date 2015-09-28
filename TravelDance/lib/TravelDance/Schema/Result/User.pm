@@ -41,13 +41,12 @@ Primary key.
 primary_column users_id => {
     data_type         => "integer",
     is_auto_increment => 1,
-    sequence          => "users_users_id_seq",
 };
 
 =head2 username
 
-The username is automatically converted to lowercase so we make sure that the
-unique constraint on username works .
+We need to check that username is not undefined or empty and also convert it
+to lowercase since we want case-insensitive uniqueness.
 
 =cut
 

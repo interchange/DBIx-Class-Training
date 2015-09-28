@@ -1,0 +1,148 @@
+#!/usr/bin/env perl
+
+use utf8;
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+use DateTime;
+use lib 'lib';
+
+my $schema = schema;
+
+my $users_rset = $schema->resultset('User');
+$users_rset->delete;
+my @users = $users_rset->populate(
+    [
+        [
+            'username',   'nickname', 'email', 'password',
+            'first_name', 'last_name',
+        ],
+        [
+            'syspete',          'SysPete',
+            'peter@sysnix.com', 'badpassword',
+            'Peter',            'Mottram',
+        ],
+        [
+            'racke',            'Racke',
+            'racke@linuxia.de', 'badpassword',
+            'Stefan',           'Hornburg',
+        ],
+    ]
+);
+
+my $ret = $users[0]->related_resultset('locations')->populate(
+    [
+        {
+            country_iso_code => 'GB',
+            visited          => DateTime->new( year => 2014, month => 11 ),
+        },
+        {
+            country_iso_code => 'DE',
+            visited          => DateTime->new( year => 1992, month => 3 ),
+        },
+        {
+            country_iso_code => 'CH',
+            visited          => DateTime->new( year => 1991, month => 9 ),
+        },
+        {
+            country_iso_code => 'NL',
+            visited          => DateTime->new( year => 1998, month => 11 ),
+        },
+        {
+            country_iso_code => 'LU',
+            visited          => DateTime->new( year => 2000, month => 9 ),
+        },
+        {
+            country_iso_code => 'TR',
+            visited          => DateTime->new( year => 2012, month => 6 ),
+        },
+        {
+            country_iso_code => 'JO',
+            visited          => DateTime->new( year => 2002, month => 10 ),
+        },
+        {
+            country_iso_code => 'IL',
+            visited          => DateTime->new( year => 2002, month => 11 ),
+        },
+        {
+            country_iso_code => 'BE',
+            visited          => DateTime->new( year => 1999, month => 6 ),
+        },
+        {
+            country_iso_code => 'FR',
+            visited          => DateTime->new( year => 1980, month => 4 ),
+        },
+        {
+            country_iso_code => 'ES',
+            visited          => DateTime->new( year => 1994, month => 9 ),
+        },
+        {
+            country_iso_code => 'MY',
+            visited          => DateTime->new( year => 1992, month => 9 ),
+        },
+        {
+            country_iso_code => 'SG',
+            visited          => DateTime->new( year => 1992, month => 9 ),
+        },
+        {
+            country_iso_code => 'FI',
+            visited          => DateTime->new( year => 1986, month => 6 ),
+        },
+        {
+            country_iso_code => 'US',
+            region           => 'California',
+            visited          => DateTime->new( year => 1991, month => 2 ),
+        },
+        {
+            country_iso_code => 'CA',
+            region           => 'Ontario',
+            visited          => DateTime->new( year => 1993, month => 6 ),
+        },
+        {
+            country_iso_code => 'CA',
+            region           => 'Quebec',
+            city             => 'Montreal',
+            visited          => DateTime->new( year => 1993, month => 7 ),
+        },
+        {
+            country_iso_code => 'AW',
+            visited          => DateTime->new( year => 1996, month => 9 ),
+        },
+        {
+            country_iso_code => 'AN',
+            region           => 'Curaçao',
+            visited          => DateTime->new( year => 1996, month => 9 ),
+        },
+        {
+            country_iso_code => 'EG',
+            visited          => DateTime->new( year => 1997, month => 8 ),
+        },
+        {
+            country_iso_code => 'KE',
+            visited          => DateTime->new( year => 2003, month => 12 ),
+        },
+        {
+            country_iso_code => 'TZ',
+            visited          => DateTime->new( year => 2003, month => 12 ),
+        },
+        {
+            country_iso_code => 'JP',
+            visited          => DateTime->new( year => 1994, month => 5 ),
+        },
+        {
+            country_iso_code => 'LV',
+            visited          => DateTime->new( year => 2006, month => 8 ),
+        },
+        {
+            country_iso_code => 'IT',
+            visited          => DateTime->new( year => 1990, month => 9 ),
+        },
+        {
+            country_iso_code => 'MT',
+            visited          => DateTime->new( year => 2005, month => 1 ),
+        },
+        {
+            country_iso_code => 'IE',
+            visited          => DateTime->new( year => 1995, month => 5 ),
+        },
+    ],
+);
