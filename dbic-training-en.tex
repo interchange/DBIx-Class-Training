@@ -100,6 +100,117 @@ makes correlated subqueries really simple
 \end{description}
 \end{frame}
 
+Problem: we want a count of rows in a related table
+
+Obvious approach:
+
+\begin{lstlisting}
+    my $rs = $schema->resultset('Author')->search(
+        undef,
+        {
+            join       => 'books',
+            '+columns' => {
+                book_count => {
+                    count => 'books.id'
+                }
+            },
+            distinct   => 1,    # let DBIC work out group_by for us
+        }
+    );
+\end{lstlisting}
+
+This causes a number of problems:
+
+\begin{itemize}
+\item Depending on engine, COUNT’s that aren’t COUNT(*) tend to be slow as
+they do table scans.
+\item This is hard to chain since we've introduced JOIN and GROUP BY and
+collapsed COUNTs might produced unexpected results.
+\end{itemize}
+
+\begin{lstlisting}
+Much nicer to do:
+
+    package MyApp::Schema::ResultSet::Author;
+
+    use parent 'DBIx::Class::ResultSet';
+
+   
+__PACKAGE__->load_components(qw(Helper::ResultSet::CorrelateRelationship));
+
+    sub with_book_count {
+        my $self = shift;
+
+        $self->search(
+            undef,
+            {
+                '+columns' => {
+                    book_count =>
+$self->correlate('books')->count_rs->as_query
+                }
+            }
+        );
+    }
+\end{lstlisting}
+
+Then elsewhere:
+
+\begin{lstlisting}
+my $rs = $schema->resultset('Author')->with_book_count;
+
+The SQL query will look something like this:
+
+  SELECT me.id, me.name, me.foo, ..., (
+    SELECT COUNT( * )
+      FROM books books_alias
+     WHERE books_alias.id = authors.id
+   )
+  FROM authors me
+
+This is *much* faster and *always* chainable since no JOIN, GROUP BY, or
+other junk added to query.
+\end{lstlisting}
+
+Cool example from Interchange6::Schema::ResultSet::Product :
+
+\begin{lstlisting}
+    sub with_average_rating {
+        my $self = shift;
+
+        return $self->search(
+            undef,
+            {
+                '+select' => [
+                    {
+                        coalesce => [
+
+                            $self->correlate('canonical')
+                              ->related_resultset('_product_reviews')
+                              ->search_related(
+                                'message',
+                                { 'message.approved' => 1,
+'message.public' => 1 }
+                             
+)->get_column('rating')->func_rs('avg')->as_query,
+
+                            $self->correlate('_product_reviews')
+                              ->search_related(
+                                'message',
+                                { 'message.approved' => 1,
+'message.public' => 1 }
+                             
+)->get_column('rating')->func_rs('avg')->as_query,
+
+                          ],
+                        -as => 'average_rating'
+                    }
+                ],
+                '+as' => ['average_rating'],
+            }
+        );
+    }
+\end{lstlisting}
+
 \subsubsection{Shortcuts}
 \begin{description}
 \item[AddColumns] 
