@@ -38,6 +38,19 @@ primary_column locations_id => {
     is_auto_increment => 1,
 };
 
+=head2 home_location
+
+Whether this location is where the related User lives.
+
+Boolean, defaults to 0 (false);
+
+=cut
+
+column home_location => {
+    data_type     => 'boolean',
+    default_value => 0,
+};
+
 =head2 address
 
 First line of address. Defaults to empty string.

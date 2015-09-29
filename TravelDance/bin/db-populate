@@ -139,6 +139,7 @@ my $ret = $users[0]->related_resultset('locations')->populate(
         {
             country_iso_code => 'MT',
             visited          => DateTime->new( year => 2005, month => 1 ),
+            home_location    => 1,
         },
         {
             country_iso_code => 'IE',
