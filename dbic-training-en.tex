@@ -35,33 +35,216 @@
 \end{itemize}
 \end{frame}
 
-\section{Schema Classes}
+\section{DBIC Classes}
 
-\begin{frame}{Schema Classes}
+\begin{frame}{DBIC Classes}
 \begin{itemize}
-\item Country
-\item User
+\item Two mandatory types of class
+\item One schema class
+\begin{itemize}
+\item TravelDance::Schema
+\end{itemize}
+\item One result class for each table
+\begin{itemize}
+\item TravelDance::Schema::Result::Country
+\item TravelDance::Schema::Result::Location
+\item TravelDance::Schema::Result::User
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Schema Class}
+
+\begin{frame}[fragile]{Schema Class}
+\begin{lstlisting}
+package TravelDance::Schema;
+use warnings;
+use strict;
+use base 'DBIx::Class::Schema';
+
+__PACKAGE__->load_components();
+1;
+\end{lstlisting}
+\end{frame}
+
+\subsection{Result Classes}
+
+\begin{frame}{DBIC Classes}
+\begin{itemize}
+\item Need one result class for each table
+\item Minimum requirements:
+\begin{itemize}
+\item Table name
+\item Column names
+\item Primary key
+\item Relationships to other tables
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 \subsection{Country Result Class}
 
-\begin{frame}{Country / Vanilla DBIx::Class}
-
+\begin{frame}[fragile]{Country / Vanilla DBIx::Class}
+\begin{lstlisting}
+package TravelDance::Schema::Result::Country;
+use base qw/DBIx::Class::Core/;
+__PACKAGE__->add_columns(
+    country_iso_code => {
+        data_type => "char",
+        size      => 2,
+    },
+    name => {
+        data_type => "varchar",
+        size      => 255,
+    },
+);
+\end{lstlisting}
 \end{frame}
 
-\begin{frame}{Country / Candy DBIx::Class}
+\begin{frame}[fragile]{Country / Vanilla DBIx::Class}
+\begin{lstlisting}
+__PACKAGE__->set_primary_key("country_iso_code");
 
+__PACKAGE__->has_many(
+    locations =>
+      "TravelDance::Schema::Result::Location",
+      'country_iso_code'
+);
+
+__PACKAGE__->many_to_many(
+    users => "locations", "user"
+);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Country / DBIx::Class::Candy}
+\begin{lstlisting}
+package TravelDance::Schema::Result::Country;
+use TravelDance::Schema::Candy;
+
+primary_column country_iso_code => {
+    data_type => "char",
+    size      => 2
+};
+
+column name => {
+    data_type => "varchar",
+    size      => 255
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Country / DBIx::Class::Candy}
+\begin{lstlisting}
+has_many
+  locations =>
+  "TravelDance::Schema::Result::Location",
+  'country_iso_code';
+
+many_to_many users => "locations", "user";
+\end{lstlisting}
+\end{frame}
+
+\subsection{Location Result Class}
+
+\begin{frame}[fragile]{User / Vanilla DBIx::Class}
+\begin{lstlisting}
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+package TravelDance::Schema::Result::Location;
+use TravelDance::Schema::Candy;
+
+primary_column locations_id => {
+    data_type         => "integer",
+    is_auto_increment => 1,
+};
+column address => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+column address_2 => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
+
+column postal_code => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+column city => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
+
+column region => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+column country_iso_code => {
+    data_type      => "char",
+    size           => 2,
+    is_foreign_key => 1,
+    is_nullable    => 1,
+};
+
+column visited => {
+    data_type     => "datetime",
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+column users_id => {
+    data_type      => "integer",
+    is_foreign_key => 1,
+};
+
+belongs_to
+  country => "TravelDance::Schema::Result::Country",
+  "country_iso_code", { join_type => 'left' };
+
+belongs_to user => "TravelDance::Schema::Result::User",
+  "users_id";
+\end{lstlisting}
 \end{frame}
 
 \subsection{User Result Class}
 
-\begin{frame}{User / Vanilla DBIx::Class}
+\begin{frame}[fragile]{User / Vanilla DBIx::Class}
+\begin{lstlisting}
 
+\end{lstlisting}
 \end{frame}
 
-\begin{frame}{User / Candy DBIx::Class}
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
 
+\end{lstlisting}
 \end{frame}
 
 \section{Basic and Advanced Queries}
