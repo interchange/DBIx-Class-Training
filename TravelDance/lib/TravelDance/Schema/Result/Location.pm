@@ -129,6 +129,22 @@ column country_iso_code => {
     is_nullable    => 1,
 };
 
+=head2 latitude
+
+Is nullable.
+
+=cut
+
+column latitude => { data_type => "float", size => 20, is_nullable => 1 };
+
+=head2 longitude
+
+Is nullable.
+
+=cut
+
+column longitude => { data_type => "float", size => 20, is_nullable => 1 };
+
 =head2 visited
 
 Date and time when this location was visited returned as L<DateTime> object.
