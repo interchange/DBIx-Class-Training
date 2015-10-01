@@ -442,8 +442,50 @@ config yml - everyone should use this
 \end{frame}
 
 \section{Deployment Handler}
+
 \begin{frame}{Deployment Handler}
+\begin{itemize}
+\item DBIx::Class::DeploymentHandler
+\item Deploy databases
+\item Upgrade databases
+\end{itemize}
 \end{frame}
+
+\begin{frame}{Principles}
+\begin{itemize}
+\item Change schema
+\item Add custom scripts
+\item Bump version number
+\item Prepare upgrade
+\item Deploy upgrade
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Change Schema}
+\begin{itemize}
+\item Add table
+\item Add column
+\item Alter column
+\end{itemize}
+\end{frame}
+
+\subsection{Prepare upgrade}
+\begin{lstlisting}
+my $dh     = DBIx::Class::DeploymentHandler->new(
+    {
+        schema              => $schema,
+        databases           => 'MySQL',
+        sql_translator_args => { add_drop_table => 0 }
+    }
+);
+$dh->prepare_deploy;
+$dh->prepare_upgrade(
+    {
+        from_version => $dh->database_version,
+        to_version => $dh->schema_version
+    }
+);
+\end{lstlisting}
 
 \end{document}
 
