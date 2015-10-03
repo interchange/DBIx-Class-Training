@@ -55,6 +55,8 @@
 
 \subsection{Schema Class}
 
+Here we see the minimal DBIx::Class schema definition:
+
 \begin{frame}[fragile]{Schema Class}
 \begin{lstlisting}
 package TravelDance::Schema;
@@ -66,6 +68,9 @@ __PACKAGE__->load_components();
 1;
 \end{lstlisting}
 \end{frame}
+
+\verb|load_components| searches \verb|TravelDance::Schema::Result{Set}::*|
+for Result and ResultSet classes and loads them into the schema.
 
 \subsection{Result Classes}
 
@@ -501,6 +506,11 @@ $dh->prepare_upgrade(
 \item from file
 \end{itemize}
 \end{itemize}
+\end{frame}
+
+\subsection{Internals}
+
+\begin{frame}{Directories and files}
 \end{frame}
 
 \end{document}
