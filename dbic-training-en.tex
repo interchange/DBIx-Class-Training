@@ -83,16 +83,18 @@ for Result and ResultSet classes and loads them into the schema.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Result Classes}
-\begin{itemize}
-\item Need one result class for each table
-\item Minimum requirements:
+\subsubsection{Result Class Definition}
+Describes each result class and the database table behind it. 
+
+See \href{https://metacpan.org/pod/DBIx::Class::ResultSource}{DBIx::Class::ResultSource} for more details.
+
+\begin{frame}{Result Class Definition}
+
 \begin{itemize}
 \item Table name
-\item Column names
+\item Columns
 \item Primary key
-\item Relationships to other tables
-\end{itemize}
+\item Relationships
 \end{itemize}
 \end{frame}
 
