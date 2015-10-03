@@ -279,6 +279,26 @@ belongs_to user => "TravelDance::Schema::Result::User",
 \begin{frame}{Extending Schema}
 \end{frame}
 
+\subsection{Using Result Class Components}
+
+In a single result class:
+
+\begin{frame}[fragile]{Using Components}
+\begin{lstlisting}
+package TravelDance::Schema::Result::User;
+
+use TravelDance::Schema::Candy -components => [qw(
+    InflateColumn::DateTime 
+    PassphraseColumn
+    TimeStamp
+)];
+
+\end{lstlisting}
+\end{frame}
+
+To add a result class component to all result classes add to list 
+in \verb|TravelDance::Schema::Candy|'s \verb|parse_arguments|.
+
 \subsection{Helpers}
 \subsubsection{ResultSet Helpers}
 \begin{description}
