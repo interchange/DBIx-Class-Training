@@ -42,7 +42,16 @@
 \begin{frame}{Squeeze OO}
 % OO supplied by DBIx::Class
 % DBIx::Class + Moo
+
+Object relationship manager (ORM)
+SQL => OO
+hashref => 
+
 \end{frame}
+
+Just for the fun it, later you will learn how do you
+use DBIx::Class to retrieve hash references instead of
+objects!
 
 \begin{frame}{DBIx::Class to the rescue!}
 % DBIx::Class
@@ -464,6 +473,24 @@ uses this all the time
 \item[Search::{Not}Like]
 \item[Search::{Not}Null] 
 \end{description}
+
+Using the HashRefInflator makes sense when you need to quickly retrieve
+data from a massive resultset or you need a list of hash references anyway,
+e.g. for input to a template in a web application.
+
+\begin{frame}[fragile]{HashRefInflator}
+\begin{lstlisting}
+my $rs = $schema->resultset('Country')->search({}, {
+   result_class => 'DBIx::Class::ResultClass::HashRefInflator',
+ });
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{HashRefInflator with HRI helper}
+\begin{lstlisting}
+my $rs = $schema->resultset('Country')->search({})->hri;
+\end{lstlisting}
+\end{frame}
 
 \subsubsection{Schema}
 \begin{description}
