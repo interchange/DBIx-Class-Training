@@ -293,6 +293,25 @@ belongs_to user => "TravelDance::Schema::Result::User",
 \begin{frame}{Basic and Advanced Queries}
 \end{frame}
 
+\subsection{Chaining}
+% from riba's slides
+
+\begin{frame}[fragile]{Chaining / Nesting}
+Shallow nesting (chaining)
+\begin{lstlisting}
+    $rs->search({ name => { '!=', 'blah' }})
+        ->search({ name => { '!=', undef }})
+
+    ... WHERE name != 'blah' AND name IS NOT null
+Subquery nesting
+    $rs->search({}, { distinct => 1 })
+        ->as_subselect_rs
+         ->search({}, { rows => 1 })
+
+    ... SELECT FROM (SELECT * FROM artist GROUP_BY * ) LIMIT 1
+\end{lstlisting}
+\end{frame}
+
 \subsection{Correlated Subqueries}
 \begin{frame}{Correlated Subqueries}
 \end{frame}
