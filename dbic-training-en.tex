@@ -630,7 +630,8 @@ e.g. for input to a template in a web application.
 \begin{frame}[fragile]{HashRefInflator}
 \begin{lstlisting}
 my $rs = $schema->resultset('Country')->search({}, {
-   result_class => 'DBIx::Class::ResultClass::HashRefInflator',
+   result_class
+     => 'DBIx::Class::ResultClass::HashRefInflator',
  });
 \end{lstlisting}
 \end{frame}
@@ -638,6 +639,9 @@ my $rs = $schema->resultset('Country')->search({}, {
 \begin{frame}[fragile]{HashRefInflator with HRI helper}
 \begin{lstlisting}
 my $rs = $schema->resultset('Country')->search({})->hri;
+
+# since 'search' here is redundant we can just use:
+my $rs = $schema->resultset('Country')->hri;
 \end{lstlisting}
 \end{frame}
 
