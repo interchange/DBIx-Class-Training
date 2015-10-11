@@ -683,6 +683,10 @@ belongs_to
 
 \section{Extending Schema}
 \begin{frame}{Extending Schema}
+\begin{itemize}
+\item Result Class Components
+\item Helpers
+\end{itemize}
 \end{frame}
 
 \subsection{Using Result Class Components}
@@ -698,12 +702,73 @@ use TravelDance::Schema::Candy -components => [qw(
     PassphraseColumn
     TimeStamp
 )];
-
 \end{lstlisting}
 \end{frame}
 
 To add a result class component to all result classes add to list 
 in \verb|TravelDance::Schema::Candy|'s \verb|parse_arguments|.
+
+\subsubsection{Password/passphrase columns}
+
+DBIx::Class::PassphraseColumn uses the column definition when hashing a new
+password/passphrase but can test the password against many types of hash
+stored in the column. This allows an application to switch from (say) crypt
+to blowfish whilst still working with the old hashes.
+
+\begin{frame}[fragile]{Password column}
+\begin{lstlisting}
+column password => {
+    data_type        => "text",
+    default_value    => "",
+    passphrase       => 'rfc2307',
+    passphrase_class => 'BlowfishCrypt',
+    passphrase_args  => {
+        cost        => 14,
+        key_nul     => 1,
+        salt_random => 1,
+    },
+    passphrase_check_method => 'check_password',
+};
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Automatic setting of date/datetime columns on create/update}
+DBIx::Class::TimeStamp
+
+From User class:
+
+\begin{frame}[fragile]{Create/update date columns}
+\begin{lstlisting}
+column created => {
+    data_type     => "datetime",
+    set_on_create => 1,
+};
+
+
+column last_modified => {
+    data_type     => "datetime",
+    set_on_create => 1,
+    set_on_update => 1,
+};
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Automatic DateTime inflation from columns}
+
+Using DBIx::Class::InflateColumn::DateTime we can have date and datetime
+columns automatically converted to DateTime objects when retrieved from the
+database. The reverse also happens and DateTime objects are converted back
+into a format appropriate for the underlying database engine on
+create/update.
+
+NOTE: Don't rely on InflateColumn::DateTime to parse date strings for
+you. The column is set directly for any non-references and
+InflateColumn::DateTime is completely bypassed. For example if you pass a
+string value date directly to create/update then this will be stored AS IS
+and on retrieve might be in a format that InflateColumn::DateTime’s inflator
+does not understand resulting in an exception rather than the DateTime
+object you are expecting. The rule is always pass DateTime objects when
+creating/updating a column with this inflator set. 
 
 \subsection{Helpers}
 \subsubsection{ResultSet Helpers}
