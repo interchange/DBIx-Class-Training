@@ -427,12 +427,15 @@ Shallow nesting (chaining)
         ->search({ name => { '!=', undef }})
 
     ... WHERE name != 'blah' AND name IS NOT null
+\end{lstlisting}
 Subquery nesting
+\begin{lstlisting}
     $rs->search({}, { distinct => 1 })
         ->as_subselect_rs
          ->search({}, { rows => 1 })
 
-    ... SELECT FROM (SELECT * FROM artist GROUP_BY * ) LIMIT 1
+    ... SELECT FROM (SELECT * FROM artist GROUP_BY * )
+        LIMIT 1
 \end{lstlisting}
 \end{frame}
 
