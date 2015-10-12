@@ -583,16 +583,16 @@ the search query
 \begin{frame}[fragile]{Custom join conditions}
 \begin{lstlisting}
 has_many
-    before_2000 => "TravelDance::Schema::Result::Location",
-    sub {
-        my $args = shift;
-        return {
-            "$args->{foreign_alias}.users_id" =>
-                { -ident => "$args->{self_alias}.users_id" },
-            "$args->{foreign_alias}.visited" =>
-                { '<', '2000-01-01' },
-        };
-    };
+ before_2000 => "TravelDance::Schema::Result::Location",
+ sub {
+   my $args = shift;
+   return {
+      "$args->{foreign_alias}.users_id" =>
+          { -ident => "$args->{self_alias}.users_id" },
+      "$args->{foreign_alias}.visited" =>
+          { '<', '2000-01-01' },
+   };
+ };
 \end{lstlisting}
 \end{frame}
 
@@ -655,10 +655,12 @@ right-hand table. Compare these two SQL queries and their result:
 
 \begin{frame}[fragile]{SQL queries}
 \begin{lstlisting}
-SELECT count(*) FROM locations l JOIN countries c ON l.country_iso_code=c.country_iso_code;
+SELECT count(*) FROM locations l JOIN countries c
+    ON l.country_iso_code=c.country_iso_code;
 27
 
-SELECT count(*) FROM locations l LEFT JOIN countries c ON l.country_iso_code=c.country_iso_code;
+SELECT count(*) FROM locations l LEFT JOIN countries c
+    ON l.country_iso_code=c.country_iso_code;
 28
 \end{lstlisting}
 \end{frame}
@@ -705,15 +707,15 @@ in \verb|TravelDance::Schema::Candy|'s \verb|parse_arguments|.
 
 DBIx::Class::PassphraseColumn uses the column definition when hashing a new
 password/passphrase but can test the password against many types of hash
-stored in the column. This allows an application to switch from (say) crypt
-to blowfish whilst still working with the old hashes.
+stored in the column. This allows an application to switch from (say)
+MD5 crypt to blowfish whilst still working with the old hashes.
 
 \begin{frame}[fragile]{Password column}
 \begin{lstlisting}
 column password => {
     data_type        => "text",
     default_value    => "",
-    passphrase       => 'rfc2307',
+    passphrase       => 'crypt',
     passphrase_class => 'BlowfishCrypt',
     passphrase_args  => {
         cost        => 14,
