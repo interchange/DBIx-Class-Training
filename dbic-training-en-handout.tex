@@ -7,6 +7,22 @@
 \renewenvironment*{frame}[2][]{\relax}{\relax}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage{caption}
+\captionsetup{labelformat=empty,labelsep=none}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{ulem}
+\usepackage{gensymb} % degree
+\usepackage{color}
+\definecolor{mygrey}{gray}{0.85}
+\lstset{language=Perl,%
+  basicstyle=\ttfamily\small,%
+  tabsize=3,%
+  backgroundcolor=\color{mygrey},%
+  frame=trbl,%
+  showstringspaces=false}
+
 \input{dbic-training-en.tex}
 
 %%% Local Variables: 
