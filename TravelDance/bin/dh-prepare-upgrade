@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+use lib 'lib';
+use DBIx::Class::DeploymentHandler;
+
+my $schema = schema;
+my $dh     = DBIx::Class::DeploymentHandler->new(
+    {
+        schema              => $schema,
+        databases           => [qw/MySQL PostgreSQL SQLite/],
+        sql_translator_args => { add_drop_table => 0 }
+    }
+);
+$dh->prepare_deploy;
+$dh->prepare_upgrade(
+    {
+        from_version => $dh->database_version,
+        to_version => $dh->schema_version
+    }
+);
