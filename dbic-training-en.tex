@@ -788,10 +788,15 @@ makes correlated subqueries really simple
 \end{description}
 \end{frame}
 
+\begin{frame}{CorrelateRelationship}
+
 Problem: we want a count of rows in a related table
 
-Obvious approach:
+\end{frame}
 
+So the obvious approach for this is:
+
+\begin{frame}[fragile]{CorrelateRelationship}
 \begin{lstlisting}
     my $rs = $schema->resultset('Author')->search(
         undef,
@@ -806,7 +811,7 @@ Obvious approach:
         }
     );
 \end{lstlisting}
-
+\end{frame}
 This causes a number of problems:
 
 \begin{itemize}
@@ -816,6 +821,7 @@ they do table scans.
 collapsed COUNTs might produced unexpected results.
 \end{itemize}
 
+\begin{frame}[fragile]{CorrelateRelationship}
 \begin{lstlisting}
 Much nicer to do:
 
@@ -840,7 +846,9 @@ $self->correlate('books')->count_rs->as_query
         );
     }
 \end{lstlisting}
+\end{frame}
 
+\begin{frame}[fragile]{CorrelateRelationship}
 Then elsewhere:
 
 \begin{lstlisting}
@@ -858,6 +866,7 @@ The SQL query will look something like this:
 This is *much* faster and *always* chainable since no JOIN, GROUP BY, or
 other junk added to query.
 \end{lstlisting}
+\end{frame}
 
 Cool example from Interchange6::Schema::ResultSet::Product :
 
