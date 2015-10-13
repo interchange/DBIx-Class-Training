@@ -12,6 +12,8 @@ use strict;
 use base 'DBIx::Class::Schema';
 use TravelDance::Schema::Populate::CountryLocale;
 
+our $VERSION = 1;
+
 =head1 COMPONENTS
 
 The following components are currently loaded:
