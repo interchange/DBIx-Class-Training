@@ -15,6 +15,11 @@ my $dh     = DBIx::Class::DeploymentHandler->new(
         databases           => [qw/MySQL PostgreSQL SQLite/],
         sql_translator_args => { add_drop_table => 0 }
     }
-);
+                                                );
+my $version = eval { $dh->database_version };
+if ($version) {
+    print "DH version storage already installed\n";
+    exit;
+}
 $dh->install_version_storage( { version => $schema->schema_version } );
 $dh->add_database_version( { version => $schema->schema_version } );
