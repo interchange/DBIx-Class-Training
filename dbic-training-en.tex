@@ -578,7 +578,7 @@ has_many locations =>
 Note: has\_many does not mean that there must be many related items but only that there can be many. One or zero related items is also possible (a LEFT JOIN).
 
 
-\begin{frame}{has_many / might\_have}
+\begin{frame}{has\_many / might\_have}
 \begin{table}
 \begin{tabular}{c | c | c}
 relationship type & default join type & number of related rows \\
@@ -590,7 +590,7 @@ might\_have & LEFT & zero or one \\
 \end{frame}
 
 The difference here is that with a collapsed search (to be covered later)
-the has_many accessor returns a resultset whereas the might_have accessor
+the has\_many accessor returns a resultset whereas the might\_have accessor
 returns a result object (a single row).
 
 \subsection{many\_to\_many}
