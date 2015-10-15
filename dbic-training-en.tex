@@ -656,7 +656,16 @@ As is the default in SQL::Abstract, the key-value pairs will be ANDed in the
 resulting JOIN clause. An OR can be achieved with an arrayref. For example a
 condition like:
 
-% ** TODO - perhaps just take from dbic pod?
+\begin{frame}[fragile]{Multiple groups of simple equality conditions}
+\begin{lstlisting}
+has_many
+  related_item_links => "My::Schema::Item::Links",
+  [
+    { 'foreign.left_itemid'  => 'self.id' },
+    { 'foreign.right_itemid' => 'self.id' },
+  ];
+\end{lstlisting}
+\end{frame}
 
 \subsubsection{Custom join conditions}
 
