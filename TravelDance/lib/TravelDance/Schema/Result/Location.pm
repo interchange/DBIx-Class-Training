@@ -125,7 +125,6 @@ in the middle of an ocean so this is nullable.
 column country_iso_code => {
     data_type      => "char",
     size           => 2,
-    is_foreign_key => 1,
     is_nullable    => 1,
 };
 
@@ -166,7 +165,6 @@ via L</user> relationship.
 
 column users_id => {
     data_type      => "integer",
-    is_foreign_key => 1,
 };
 
 =head1 RELATIONSHIPS
