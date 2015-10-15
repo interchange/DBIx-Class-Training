@@ -890,6 +890,7 @@ This causes a number of problems:
 they do table scans.
 \item This is hard to chain since we've introduced JOIN and GROUP BY and
 collapsed COUNTs might produced unexpected results.
+\item We cannot add other interesting data from the locations in the same query (such as date of most recent visit).
 \end{itemize}
 
 \begin{frame}[fragile]{CorrelateRelationship}
