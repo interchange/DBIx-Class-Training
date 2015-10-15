@@ -500,6 +500,48 @@ CRUD is defined as:
 \end{description}
 \end{frame}
 
+\subsubsection{C - Create}
+\begin{frame}[fragile]{C - Create}
+Create in the simplest form:
+
+\begin{lstlisting}
+my $user = $schema->resultset('User')->create(
+    {
+        username => 'syspete',
+        email    => 'syspete@example.com',
+        password => 're@llybadpwd',
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+Tip: do not pass in primary key field if it is auto-increment since that will be added automatically.
+
+\subsubsection{C++ - Multi Create}
+It's even possible to create an user and corresponding locations at the
+same time:
+
+\begin{frame}[fragile]{C++ - Multi Create}
+\begin{lstlisting}
+my $user = $schema->resultset('User')->create(
+    {
+        email    => 'syspete@example.com',
+
+        locations => [
+            {
+                country_iso_code => 'DE',
+                city => 'Hannover',
+            },
+            {
+                country_iso_code => 'AT',
+                city => 'Vienna',
+            },
+        ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
 \subsection{Chaining}
 % from riba's slides
 
