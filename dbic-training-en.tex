@@ -19,7 +19,15 @@
 
 \section{Introduction}
 
-\subsection{}
+This training describes a sample application making use of
+DBIx::Class and additional modules which makes you life
+way easier. So first of all, we give you and idea what
+the application is about.
+
+\subsection{TravelDance Application}
+
+You enjoy traveling, don't you? Even if not, we take you
+along for a ride.
 
 \begin{frame}{Traveling is Fun}
 % https://pixabay.com/en/volkswagen-car-bus-mobile-home-158463/
@@ -27,6 +35,43 @@
 \centering
 \includegraphics[width=1\linewidth]{img/volkswagen.png}
 \end{figure}
+\end{frame}
+
+You can take this to another level, like doing a
+competition between who visited the most countries:
+
+% All images downloaded from Wikipedia
+
+\begin{frame}{Countries}
+\begin{figure}[!ht]
+\centering
+
+\begin{minipage}{.24\textwidth}
+\centering
+\includegraphics[width=1\linewidth]{img/countries/canada.png}
+\caption{Canada}
+\end{minipage}
+% avoid paragraph break
+\begin{minipage}{.24\textwidth}
+\centering
+\includegraphics[width=0.8\linewidth]{img/countries/austria.png}
+\caption{Austria}
+\end{minipage}
+% avoid paragraph break
+\begin{minipage}{.24\textwidth}
+\centering
+\includegraphics[width=0.8\linewidth]{img/countries/slovakia.png}
+\caption{Slovakia}
+\end{minipage}
+% avoid paragraph break
+\begin{minipage}{.24\textwidth}
+\centering
+\includegraphics[width=0.8\linewidth]{img/countries/usa.png}
+\caption{USA}
+\end{minipage}
+
+\end{figure}
+
 \end{frame}
 
 \begin{frame}{SQL is ...}
@@ -212,40 +257,6 @@ See \href{https://metacpan.org/pod/DBIx::Class::ResultSource}{DBIx::Class::Resul
 \end{frame}
 
 \subsection{Country Result Class}
-
-% All images downloaded from Wikipedia
-
-\begin{frame}{Countries}
-\begin{figure}[!ht]
-\centering
-
-\begin{minipage}{.24\textwidth}
-\centering
-\includegraphics[width=0.24\linewidth]{img/countries/canada.png}
-\caption{Canada}
-\end{minipage}
-% avoid paragraph break
-\begin{minipage}{.24\textwidth}
-\centering
-\includegraphics[width=0.24\linewidth]{img/countries/austria.png}
-\caption{Austria}
-\end{minipage}
-% avoid paragraph break
-\begin{minipage}{.24\textwidth}
-\centering
-\includegraphics[width=0.24\linewidth]{img/countries/slovakia.png}
-\caption{Slovakia}
-\end{minipage}
-% avoid paragraph break
-\begin{minipage}{.24\textwidth}
-\centering
-\includegraphics[width=0.24\linewidth]{img/countries/usa.png}
-\caption{USA}
-\end{minipage}
-
-\end{figure}
-
-\end{frame}
 
 \begin{frame}[fragile]{Country / Vanilla DBIx::Class}
 \begin{lstlisting}
