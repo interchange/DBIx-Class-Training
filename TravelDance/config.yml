@@ -38,3 +38,4 @@ plugins:
         on_connect_call: 'use_foreign_keys'
         quote_names: 1
         sqlite_unicode: 1
+        sqlite_see_if_its_a_number: 1
