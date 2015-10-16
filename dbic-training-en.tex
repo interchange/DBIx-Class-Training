@@ -592,6 +592,107 @@ $rs->delete;
 \end{lstlisting}
 \end{frame}
 
+\subsection{CRUD methods}
+
+See documentation for 
+\href{https://metacpan.org/pod/DBIx::Class::ResultSet}{DBIx::Class::ResultSet} 
+and \href{https://metacpan.org/pod/DBIx::Class::Relationship::Base}
+{DBIx::Class::Relationship::Base}.
+
+\subsubsection{Create}
+
+\begin{frame}{Create}
+\begin{itemize}
+\item new / new\_result + insert
+\item new\_related + insert
+\item create\_related
+\item populate
+\item add\_to\_\$rel
+\end{itemize}
+\end{frame}
+
+\subsubsection{Update}
+
+\begin{frame}{Update}
+\begin{itemize}
+\item update
+\item update\_all
+\item set\_from\_related
+\item update\_from\_related
+\item set\_\$rel
+\end{itemize}
+\end{frame}
+
+\subsubsection{Update or Create}
+
+\begin{frame}{Update or Create}
+\begin{itemize}
+\item update\_or\_create
+\item update\_or\_new
+\item update\_or\_create\_related
+\end{itemize}
+\end{frame}
+
+\subsubsection{Retrieve}
+
+Methods which cause a database query:
+
+\begin{frame}{Retrieve with database query}
+\begin{itemize}
+\item search when called in list context
+\item find
+\item search\_related when called in list context
+\item single
+\item slice when called in list context
+\item next
+\item count
+\item all
+\item first
+\item \$relationship\_accessor for belongs\_to / has\_one / might\_have relationships
+\item find\_related
+\item count\_related
+\end{itemize}
+\end{frame}
+
+Methods which do not cause a database query:
+
+\begin{frame}{Retrieve without database query}
+\begin{itemize}
+\item search when called in scalar context
+\item search\_rs
+\item search\_related when called in scalar context
+\item search\_related\_rs
+\item cursor
+\item get\_column
+\item slice when called in scalar context
+\item count\_rs
+\item related\_resultset
+\$relationship\_accessor has\_many relationships only
+\end{itemize}
+\end{frame}
+
+\subsubsection{Retrieve or Create}
+
+\begin{frame}{Retrieve or Create}
+\begin{itemize}
+\item find\_or\_new
+\item find\_or\_create
+\item find\_or\_new\_related 
+\item find\_or\_create\_related
+\end{itemize}
+\end{frame}
+
+\subsubsection{Delete}
+
+\begin{frame}{Delete}
+\begin{itemize}
+\item delete
+\item delete\_all
+\item delete\_related
+\item remove\_from\_\$rel
+\end{itemize}
+\end{frame}
+
 \subsection{Chaining}
 % from riba's slides
 
