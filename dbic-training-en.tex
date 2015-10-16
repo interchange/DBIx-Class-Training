@@ -1172,6 +1172,8 @@ config yml - everyone should use this
 
 \section{Deployment Handler}
 
+\subsection{Deploy/Upgrade/Downgrade}
+
 \begin{frame}{Deployment Handler}
 \begin{itemize}
 \item DBIx::Class::DeploymentHandler
@@ -1180,6 +1182,8 @@ config yml - everyone should use this
 \item Downgrade databases
 \end{itemize}
 \end{frame}
+
+\subsection{Principles}
 
 \begin{frame}{Principles}
 \begin{itemize}
@@ -1194,6 +1198,8 @@ config yml - everyone should use this
 
 Note: create backup can be done by DeploymentHandler itself.
 
+\subsection{Change Schema}
+
 \begin{frame}{Change Schema}
 \begin{itemize}
 \item Add table
@@ -1202,7 +1208,47 @@ Note: create backup can be done by DeploymentHandler itself.
 \end{itemize}
 \end{frame}
 
+\subsection{Bump version number}
+\begin{frame}{Bump version number}
+\begin{itemize}
+\item Natural number => 1
+\item Increase by 1 => 2
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Version 1}
+\begin{lstlisting}
+package TravelDance::Schema;
+use warnings;
+use strict;
+use base 'DBIx::Class::Schema';
+
+our $VERSION = 1;
+
+__PACKAGE__->load_namespaces();
+
+1;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Version 2}
+\begin{lstlisting}
+package TravelDance::Schema;
+use warnings;
+use strict;
+use base 'DBIx::Class::Schema';
+
+our $VERSION = 2;
+
+__PACKAGE__->load_namespaces();
+
+1;
+\end{lstlisting}
+\end{frame}
+
 \subsection{Prepare upgrade}
+
+\begin{frame}[fragile]{Prepare upgrade}
 \begin{lstlisting}
 my $dh     = DBIx::Class::DeploymentHandler->new(
     {
@@ -1219,6 +1265,7 @@ $dh->prepare_upgrade(
     }
 );
 \end{lstlisting}
+\end{frame}
 
 \subsection{Add custom scripts}
 
