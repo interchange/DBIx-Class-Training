@@ -1096,30 +1096,22 @@ creating/updating a column with this inflator in place.
 \subsubsection{ResultSet Components}
 
 In order to be able to add a component to all ResultSet classes we need to
-do a number of things:
+do:
 
-\begin{frame}{ResultSet Components}
+\begin{frame}[fragile]{ResultSet Components}
 \begin{itemize}
-\item create a parent ResultSet class that all of our ResultSet classes inherit from
-\item set this parent ResultSet class as the default ResultSet class in our Schema class
-\item make sure all custom ResultSet classes do actually inherit from this
-  class :)
+\item create parent class \\
+  \verb|TravelDance::Schema::ResultSet|
+\item set as default resultset class \\
+  \verb|TravelDance::Schema|
+\item use for custom resultset classes \\
+ \verb|TravelDance::Schema::ResultSet::User|
 \end{itemize}
 \end{frame}
 
-\paragraph{Schema Class}
-\begin{frame}[fragile]{Schema Class}
-\begin{lstlisting}
-package TravelDance::Schema;
+\paragraph{Create Parent Class}
 
-__PACKAGE__->load_namespaces(
-    default_resultset_class => 'ResultSet'
-);
-\end{lstlisting}
-\end{frame}
-
-\paragraph{Parent Class}
-\begin{frame}[fragile]{Parent Class}
+\begin{frame}[fragile]{Create Parent Class}
 \begin{lstlisting}
 package TravelDance::Schema::ResultSet;
 
@@ -1129,8 +1121,21 @@ __PACKAGE__->load_components("TimeStamp");
 \end{lstlisting}
 \end{frame}
 
-\paragraph{Custom ResultSet Class}
-\begin{frame}[fragile]{Custom ResultSet Class}
+\paragraph{Set as Default Resultset Class}
+
+\begin{frame}[fragile]{Set as Default Resultset Class}
+\begin{lstlisting}
+package TravelDance::Schema;
+
+__PACKAGE__->load_namespaces(
+    default_resultset_class => 'ResultSet'
+);
+
+\end{lstlisting}
+\end{frame}
+
+\paragraph{Inherit from Parent Class}
+\begin{frame}[fragile]{Inherit from Parent Class}
 \begin{lstlisting}
 package TravelDance::Schema::ResultSet::User;
 
