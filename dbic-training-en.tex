@@ -542,6 +542,56 @@ my $user = $schema->resultset('User')->create(
 \end{lstlisting}
 \end{frame}
 
+\subsubsection{U - Update}
+
+One row only:
+
+\begin{frame}[fragile]{U - Update (one row)}
+\begin{lstlisting}
+$user->update({
+        email => 'syspete@newdomain.com'
+});
+\end{lstlisting}
+\end{frame}
+
+You can also use the column accessor then force the update to be pushed to
+the database:
+
+\begin{frame}[fragile]{U - Update (through accessor)}
+\begin{lstlisting}
+$user->email('syspete@newdomain.com');
+$user->update;
+\end{lstlisting}
+\end{frame}
+
+Many rows in a table:
+
+\begin{frame}[fragile]{U - Update (multiple rows)}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(...);
+$rs->update({ fail_count => 0 });
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{D - Delete}
+
+One row only:
+
+\begin{frame}[fragile]{D - Delete (one row)}
+\begin{lstlisting}
+$user->delete;
+\end{lstlisting}
+\end{frame}
+
+Many rows in a table:
+
+\begin{frame}[fragile]{D - Delete (multiple rows)}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(...);
+$rs->delete;
+\end{lstlisting}
+\end{frame}
+
 \subsection{Chaining}
 % from riba's slides
 
