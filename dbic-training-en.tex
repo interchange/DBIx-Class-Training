@@ -984,12 +984,34 @@ belongs_to
 \section{Extending Schema}
 \begin{frame}{Extending Schema}
 \begin{itemize}
-\item Result Class Components
+\item Components
 \item Helpers
 \end{itemize}
 \end{frame}
 
-\subsection{Using Result Class Components}
+\subsection{Components}
+DBIx::Class uses \href{https://metacpan.org/pod/Class::C3::Componentised}
+{Class::C3::Componentised} to allow mix-ins (components) to be added to the 
+various classes that together comprise the schema definition. 
+
+Many components exist for the Schema class and also for Result 
+and ResultSet classes.
+
+\subsubsection{Schema Components}
+
+Loading a component to your main Schema class:
+
+\begin{frame}[fragile]{Schema Components}
+\begin{lstlisting}
+package TravelDance::Schema;
+ 
+__PACKAGE__->load_components(
+    'Helper::Schema::QuoteNames'
+);
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Using Result Class Components}
 
 In a single result class:
 
@@ -1005,10 +1027,11 @@ use TravelDance::Schema::Candy -components => [qw(
 \end{lstlisting}
 \end{frame}
 
-To add a result class component to all result classes add to list 
+In order to add a result class component to \emph{all} result classes you
+can add these to the list 
 in \verb|TravelDance::Schema::Candy|'s \verb|parse_arguments|.
 
-\subsubsection{Password/passphrase columns}
+\paragraph{Password/passphrase columns}
 
 DBIx::Class::PassphraseColumn uses the column definition when hashing a new
 password/passphrase but can test the password against many types of hash
@@ -1032,7 +1055,7 @@ column password => {
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Automatic setting of date/datetime columns on create/update}
+\paragraph{Automatic setting of date/datetime columns on create/update}
 DBIx::Class::TimeStamp
 
 From User class:
@@ -1067,8 +1090,57 @@ InflateColumn::DateTime is completely bypassed. For example if you pass a
 string value date directly to create/update then this will be stored AS IS
 and on retrieve might be in a format that InflateColumn::DateTime’s inflator
 does not understand resulting in an exception rather than the DateTime
-object you are expecting. The rule is always pass DateTime objects when
-creating/updating a column with this inflator set. 
+object you are expecting. The rule is \verb|always| pass DateTime objects when
+creating/updating a column with this inflator in place.
+
+\subsubsection{ResultSet Components}
+
+In order to be able to add a component to all ResultSet classes we need to
+do a number of things:
+
+\begin{frame}{ResultSet Components}
+\begin{itemize}
+\item create a parent ResultSet class that all of our ResultSet classes inherit from
+\item set this parent ResultSet class as the default ResultSet class in our Schema class
+\item make sure all custom ResultSet classes do actually inherit from this
+  class :)
+\end{itemize}
+\end{frame}
+
+\paragraph{Schema Class}
+\begin{frame}[fragile]{Schema Class}
+\begin{lstlisting}
+package TravelDance::Schema;
+
+__PACKAGE__->load_namespaces(
+    default_resultset_class => 'ResultSet'
+);
+\end{lstlisting}
+\end{frame}
+
+\paragraph{Parent Class}
+\begin{frame}[fragile]{Parent Class}
+\begin{lstlisting}
+package TravelDance::Schema::ResultSet;
+
+use base 'DBIx::Class::ResultSet';
+
+__PACKAGE__->load_components("TimeStamp");
+\end{lstlisting}
+\end{frame}
+
+\paragraph{Custom ResultSet Class}
+\begin{frame}[fragile]{Custom ResultSet Class}
+\begin{lstlisting}
+package TravelDance::Schema::ResultSet::User;
+
+use base 'TravelDance::Schema::ResultSet';
+
+__PACKAGE__->load_components(
+    qw(Helper::ResultSet::CorrelateRelationship)
+);
+\end{lstlisting}
+\end{frame}
 
 \subsection{Helpers}
 \subsubsection{ResultSet Helpers}
