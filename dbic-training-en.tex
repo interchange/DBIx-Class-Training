@@ -608,15 +608,20 @@ $rs->delete;
 % https://pixabay.com/en/chain-chain-link-border-demarcation-722278/
 % Creative Commons CC0
 
-\begin{frame}[fragile]{Chaining / Nesting}
-Shallow nesting (chaining)
+\subsubsection{Shallow Nesting (Chaining)}
+
+\begin{frame}[fragile]{Shallow Nesting (Chaining)}
 \begin{lstlisting}
     $rs->search({ name => { '!=', 'blah' }})
         ->search({ name => { '!=', undef }})
 
     ... WHERE name != 'blah' AND name IS NOT null
 \end{lstlisting}
-Subquery nesting
+\end{frame}
+
+\subsubsection{Subquery nesting}
+
+\begin{frame}[fragile]{Subquery nesting}
 \begin{lstlisting}
     $rs->search({}, { distinct => 1 })
         ->as_subselect_rs
@@ -814,6 +819,8 @@ has_many
 % Source for description: https://en.wikipedia.org/wiki/Marie_Byrd_Land
 % License for Picture: CC BY 2.0 via Commons 
 
+\subsubsection{Unclaimed Land}
+
 Because of its remoteness, even by Antarctic standards, most of Marie Byrd
 Land (the portion east of 150\degree{}W) has not been claimed by any sovereign
 nation. It is by far the largest single unclaimed territory on Earth, with
@@ -829,6 +836,8 @@ immediately east of Marie Byrd Land).
     \end{center}
 \end{figure}
 \end{frame}
+
+\subsubsection{Location without a country}
 
 A location usually has a country but not if it is in a neutral zone like in
 the middle of an ocean so this column is nullable:
