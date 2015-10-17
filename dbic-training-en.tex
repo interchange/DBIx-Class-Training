@@ -1477,23 +1477,349 @@ my $countries = $schema->resultset('Country')->rand(3);
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Shortcuts}
-\begin{description}
-\item[AddColumns] 
-\item[Columns]
-\item[Distinct]
-\item[GroupBy] 
-\item[HRI]
-uses this all the time
-\item[HasRows] much faster than count for very large resultsets
-\item[Limit]
-\item[OrderBy]
-\item[Page]
-\item[Prefetch]
-\item[Rows]
-\item[Search::{Not}Like]
-\item[Search::{Not}Null] 
-\end{description}
+\subsubsection{Helper::ResultSet::RemoveColumns}
+Have a result class with a large number of columns and you want all except
+one (or more) of them:
+
+\begin{frame}[fragile]{Helper::ResultSet::RemoveColumns}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        remove_columns => [ 'password' ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+Make that the default for searches (though this is not generally recommended):
+
+\begin{frame}[fragile]{Helper::ResultSet::RemoveColumns}
+\begin{lstlisting}
+package TravelDance::Schema::Result::User;
+
+__PACKAGE__->resultset_attributes(
+    { remove_columns => [ 'password' ] }
+);
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Helper::ResultSet::Shortcut}
+
+\begin{frame}[fragile]{distinct Shortcut}
+
+\verb|distinct| shortcut:
+
+\begin{lstlisting}
+$rs->distinct;
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search(undef, { distinct => 1 });
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{group\_by Shortcut}
+
+\verb|group\_by| shortcut:
+
+\begin{lstlisting}
+$rs->group_by([ qw/ some column names / ]);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search(undef, { 
+    group_by([ qw/ some column names / ] 
+});
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{order\_by Shortcut}
+
+\verb|order_by| Shortcut:
+
+\begin{lstlisting}
+$rs->order_by({ -desc => 'col1' });
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search(undef, { order_by => { -desc => 'col1' });
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{order\_by Shortcut}
+
+Funky magic stuff:
+\begin{lstlisting}
+$rs->order_by('!col1')
+# { order_by => { -desc => 'col1' } }
+
+$rs->order_by('col1,col2')
+# { order_by => [ { -asc => 'col1' }, { -asc => 'col2' } ] }
+
+$rs->order_by('col1,!col2')
+# { order_by => [ { -asc => 'col1' }, { -desc => 'col2' } ] }
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{hri Shortcut}
+
+\verb|hri| shortcut:
+
+\begin{lstlisting}
+$rs->hri;
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, {
+    result_class => 
+        'DBIx::Class::ResultClass::HashRefInflator'
+});
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{page Shortcut}
+
+\verb|page| shortcut:
+
+\begin{lstlisting}
+$rs->page(2);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, { page => 2 } );
+\end{lstlisting}
+
+\end{frame}
+
+rows / limit
+
+\begin{frame}[fragile]{rows / limit Shortcut}
+
+\begin{lstlisting}
+$rs->rows(3);
+\end{lstlisting}
+
+or:
+
+\begin{lstlisting}
+$rs->limit(3);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, { rows => 3 } );
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{limited\_page Shortcut}
+
+\verb|limited_page| shortcut:
+
+\begin{lstlisting}
+$rs->limited_page( 2, 3 );
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, { page => 2, rows => 3 } );
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{has\_rows Shortcut}
+
+A lighter way to check if the resultset has data compared to using count.
+
+\begin{lstlisting}
+$rs->has_rows;
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, { rows => 1 } )->next;
+\end{lstlisting}
+\end{frame}
+
+results\_exists:
+
+\begin{frame}[fragile]{results\_exists Shortcut}
+
+An alternative way to check if the resultset has data using the EXISTS SQL function. Possibly lighter-weight than using count.
+
+\begin{lstlisting}
+$rs->search(...)->results_exist
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{columns Shortcut}
+
+\verb|columns| shortcut:
+
+\begin{lstlisting}
+$rs->columns([qw/ first_name last_name /]);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, { 
+    columns => [qw/ first_name last_name /] 
+} );
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{add\_columns Shortcut}
+
+\verb|add_columns| shortcut:
+
+\begin{lstlisting}
+$rs->add_columns([qw/ some column names /]);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef,
+    { '+columns' => [qw/ some columns names /] }
+);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{prefetch Shortcut}
+
+\verb|prefetch| shortcut:
+
+\begin{lstlisting}
+$rs->prefetch( { locations => 'country' } );
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search( undef, { 
+    prefetch => { locations => 'country' } 
+} );
+\end{lstlisting}
+
+\end{frame}
+
+% null ( @columns || \@columns )
+
+\begin{frame}[fragile]{null Shortcut}
+
+\verb|null| shortcut:
+
+\begin{lstlisting}
+$rs->null( 'col1', 'col2' );
+\end{lstlisting}
+
+or:
+
+\begin{lstlisting}
+$rs->null([ 'col1', 'col2' ]);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search({ col1 => undef, col2 => undef });
+\end{lstlisting}
+\end{frame}
+
+%not\_null ( @columns || \@columns )
+
+\begin{frame}[fragile]{not\_null Shortcut}
+
+\verb|not_null| shortcut:
+
+\begin{lstlisting}
+$rs->not_null( 'col1', 'col2' );
+\end{lstlisting}
+
+or:
+
+\begin{lstlisting}
+$rs->not_null([ 'col1', 'col2' ]);
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search({
+    col1 => { '!=' => undef }, col2 => { '!=' => undef }
+});
+\end{lstlisting}
+\end{frame}
+
+%like ( @columns || \@columns, $cond )
+
+\begin{frame}[fragile]{like Shortcut}
+
+\verb|like| shortcut:
+
+\begin{lstlisting}
+$rs->like( 'city', 'region', '%York' );
+\end{lstlisting}
+
+or:
+
+\begin{lstlisting}
+$rs->like([ 'city', 'region' ], '%York' );
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search(
+    { city => { -like => '%York' },
+    { region => { -like => '%York' },
+);
+\end{lstlisting}
+\end{frame}
+
+% not\_like ( @columns || \@columns, $cond )
+
+\begin{frame}[fragile]{not\_like Shortcut}
+
+\verb|not_like| shortcut:
+
+\begin{lstlisting}
+$rs->not_like( 'city', 'region', '%York' );
+\end{lstlisting}
+
+or:
+
+\begin{lstlisting}
+$rs->not_like([ 'city', 'region' ], '%York' );
+\end{lstlisting}
+
+equivalent to:
+
+\begin{lstlisting}
+$rs->search(
+    { city => { -not_like => '%York' },
+    { region => { -not_like => '%York' },
+);
+
+\end{lstlisting}
+\end{frame}
 
 Using the HashRefInflator makes sense when you need to quickly retrieve
 data from a massive resultset or you need a list of hash references anyway,
