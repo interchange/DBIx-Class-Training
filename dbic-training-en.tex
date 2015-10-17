@@ -868,9 +868,9 @@ Methods which do not cause a database query:
 \begin{frame}{Correlated Subqueries}
 \end{frame}
 
-\section{Using relationships}
+\section{Relationships}
 
-\begin{frame}{Using relationships}
+\begin{frame}{Relationships}
 \begin{itemize}
 \item has\_many, might\_have and has\_one
 \item many\_to\_many
@@ -1287,25 +1287,7 @@ __PACKAGE__->load_components(
 \end{lstlisting}
 \end{frame}
 
-\subsection{Helpers}
-\subsubsection{ResultSet Helpers}
-\begin{description}
-\item[Me] 
-simple exact way to set table aliases correctly in queries
-\item[Random] small random subset
-great for related product searches where you want a small 
-random subset of the results
-\item[CorrelateRelationship] 
-makes correlated subqueries really simple
-\end{description}
-
-\begin{frame}{ResultSet Helpers}
-\begin{description}
-\item[Me] correct table aliases
-\item[Random] small random subset
-\item[CorrelateRelationship]  
-\end{description}
-\end{frame}
+\subsection{DBIx::Class Helpers}
 
 \begin{frame}{CorrelateRelationship}
 
