@@ -1428,6 +1428,40 @@ Cool example from Interchange6::Schema::ResultSet::Product :
     }
 \end{lstlisting}
 
+\subsubsection{Helper::Resultset::Me}
+
+Predefined queries present a problem: what is the table alias I need to use?
+We can do:
+
+\begin{frame}[fragile]{Helper::Resultset::Me}
+\begin{lstlisting}
+sub in_germany {
+    my $self = shift;
+    my $current_source_alias =
+        $self->current_source_alias;
+    return $self->search(
+        { "$current_source_alias.country_iso_code"
+          => 'DE' }
+    );
+}
+\end{lstlisting}
+\end{frame}
+
+but using this helper makes things much simpler:
+
+\begin{frame}[fragile]{Helper::Resultset::Me}
+\begin{lstlisting}
+
+sub in_germany {
+    my $self = shift;
+    return $self->search(
+        { $self->me('country_iso_code') => 'DE' }
+    );
+}
+
+\end{lstlisting}
+\end{frame}
+
 \subsubsection{Shortcuts}
 \begin{description}
 \item[AddColumns] 
