@@ -556,12 +556,10 @@ same time:
 \begin{lstlisting}
 my $user = $schema->resultset('User')->create(
     {
-        email    => 'syspete@example.com',
-
+        username  => 'syspete@example.com',
         locations => [
             {
                 country_iso_code => 'DE',
-                city => 'Hannover',
             },
             {
                 country_iso_code => 'AT',
