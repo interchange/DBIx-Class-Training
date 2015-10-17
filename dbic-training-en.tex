@@ -469,19 +469,46 @@ belongs_to user => "TravelDance::Schema::Result::User",
 \end{lstlisting}
 \end{frame}
 
-% \subsection{User Result Class}
+\subsection{User Result Class}
 
-% \begin{frame}[fragile]{User / Vanilla DBIx::Class}
-% \begin{lstlisting}
+The user result class has the primary key \verb|users_id| and the
+unique column \verb|nickname|:
 
-% \end{lstlisting}
-% \end{frame}
+\begin{frame}[fragile]{User Result Class}
+\begin{lstlisting}
+package TravelDance::Schema::Result::User;
 
-% \begin{frame}[fragile]{User / DBIx::Class::Candy}
-% \begin{lstlisting}
+primary_column users_id => {
+    data_type         => "integer",
+    is_auto_increment => 1,
+};
 
-% \end{lstlisting}
-% \end{frame}
+unique_column nickname => {
+    data_type   => "varchar",
+    is_nullable => 1,
+    size        => 255,
+};
+\end{lstlisting}
+\end{frame}
+
+\verb|nickname| is not required, so we can have multiple
+rows without nickname in the table.
+
+Here we see sample data for these fields in the
+\verb|users| table:
+
+\begin{frame}[fragile]{User Data}
+\begin{lstlisting}
+
+     users_id | nickname
+    ----------+----------
+            4 | Racke
+            5 | SysPete
+           10 |
+           61 | yure
+
+\end{lstlisting}
+\end{frame}
 
 \section{CRUD and Beyond}
 \begin{frame}{CRUD and Beyond}
