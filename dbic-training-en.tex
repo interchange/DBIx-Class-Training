@@ -1803,6 +1803,147 @@ $rs->search(
 \end{lstlisting}
 \end{frame}
 
+\subsubsection{Helper::Row::NumifyGet}
+
+\begin{frame}[fragile]{Helper::Row::NumifyGet}
+
+Force numeric context on numeric columns:
+
+\begin{lstlisting}
+package TravelDance::Schema::Result::Foo_Bar;
+
+use TravelDance::Schema::Candy -components =>
+    [qw(Helper::Row::NumifyGet)];
+
+column foo => {
+    data_type   => 'integer',
+    is_nullable => 0,
+    is_numeric  => 1,   # the magic key
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Helper::Row::NumifyGet}
+\begin{lstlisting}
+sub TO_JSON {
+    return {
+        # 0 instead of "0" due to context
+        foo => $self->foo,  
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Helper::Row::OnColumnChange}
+
+\begin{frame}[fragile]{Helper::Row::OnColumnChange}
+
+Do things when the value of a column changes.
+
+\begin{itemize}
+\item before\_column\_change
+\item around\_column\_change
+\item after\_column\_change
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Helper::Row::OnColumnChange}
+
+\begin{lstlisting}
+package TravelDance::Schema::Result::User;
+
+use TravelDance::Schema::Candy -components =>
+    [qw(Helper::Row::OnColumnChange 
+        InflateColumn::DateTime)];
+
+use DateTime;
+
+column last_password_change => {
+    data_type => timestamp,
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Helper::Row::OnColumnChange}
+
+On password change:
+
+\begin{itemize}
+\item check new password against old one
+\item update \verb|last_password_change| column
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Helper::Row::OnColumnChange}
+\begin{lstlisting}
+after_column_change password => {
+    method   => 'change_password',
+    txn_wrap => 1,  # wrap it all in a transaction
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Helper::Row::OnColumnChange}
+\begin{lstlisting}
+sub change_password {
+    my ( $self, $old_value, $new_value ) = @_;
+    if ( $self->check_password($new_value) ) {
+        $self->throw_exception("Password not changed")
+    }
+    else {
+        $self->update(
+            { last_password_change => DateTime->now() }
+        );
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Helper::Schema::DateTime}
+
+\begin{frame}[fragile]{Helper::Schema::DateTime}
+Locations visited in the last year:
+
+\begin{lstlisting}
+my $one_year_ago = $schema->format_datetime(
+    DateTime->now->subtract( year => 1 )
+);
+
+my $rs = $schema->resultset('Location')->search(
+    {
+        visited => { '>' => $one_year_ago }
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Helper::Schema::DateTime}
+
+Without the helper:
+
+\begin{lstlisting}
+my $dtf = $schema->storage->datetime_parser; # boilerplate
+my $one_year_ago = $dtf->format_datetime(
+    DateTime->now->subtract( year => 1 )
+);
+
+my $rs = $schema->resultset('Location')->search(
+    {
+        visited => { '>' => $one_year_ago }
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Helper::QuoteNames}
+
+\begin{frame}{Helper::QuoteNames}
+This should always be used. Force quote\_names in your database
+connect\_info so nobody can forget to add it later.
+\end{frame}
+
 Using the HashRefInflator makes sense when you need to quickly retrieve
 data from a massive resultset or you need a list of hash references anyway,
 e.g. for input to a template in a web application.
