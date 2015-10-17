@@ -611,15 +611,28 @@ called in list context).
 
 \begin{frame}[fragile]{R - Retrieve}
 \begin{lstlisting}
-my $rs = $schema->resultset('User')->search( ... );
+# resultset with one result
+my $rs = $schema->resultset('User')
+    ->search({ nickname => 'Racke' });
 
-Arguments: $condition | undef, \%attributes
-Return Value: $resultset (scalar context) | @result_objects (list context)
+# resultset with multiple results
+my $rs = $schema->resultset('User')
+    ->search({ nickname => undef });
+\end{lstlisting}
+\end{frame}
 
+\begin{frame}[fragile]{R - Retrieve}
+\begin{lstlisting}
+# Results in an array
 my @results = $rs->all;
+
+# Number of results
 my $numusers = $rs->count;
+
+# Loop through users
 while ( my $user = $rs->next ) {
-    print "Username: " . $user->username . "\n";
+    print "User with out nick name: ",
+        $user->username , "\n";
 }
 \end{lstlisting}
 \end{frame}
