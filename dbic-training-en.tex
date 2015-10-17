@@ -1462,6 +1462,21 @@ sub in_germany {
 \end{lstlisting}
 \end{frame}
 
+\subsubsection{Helper::Resultset::Random}
+
+We use this in Interchange6 for finding random 'similar products' and other
+such searches.
+
+Three random countries:
+
+\begin{frame}[fragile]{Helper::Resultset::Me}
+\begin{lstlisting}
+
+my $countries = $schema->resultset('Country')->rand(3);
+
+\end{lstlisting}
+\end{frame}
+
 \subsubsection{Shortcuts}
 \begin{description}
 \item[AddColumns] 
