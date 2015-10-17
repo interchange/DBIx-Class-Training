@@ -21,7 +21,7 @@
 
 This training describes a sample application making use of
 DBIx::Class and additional modules which makes you life
-way easier. So first of all, we give you and idea what
+way easier. So first of all, we give you an idea what
 the application is about.
 
 \subsection{TravelDance Application}
@@ -36,6 +36,8 @@ along for a ride.
 \includegraphics[width=1\linewidth]{img/volkswagen.png}
 \end{figure}
 \end{frame}
+
+\subsubsection{Countries}
 
 You can take this to another level, like doing a
 competition between who visited the most countries:
@@ -74,6 +76,8 @@ competition between who visited the most countries:
 
 \end{frame}
 
+\subsubsection{Topics of Application}
+
 \begin{frame}{Topics of Application}
 \begin{itemize}
 \item Countries
@@ -81,6 +85,9 @@ competition between who visited the most countries:
 \item Locations
 \end{itemize}
 \end{frame}
+
+Locations include the country and the date when the 
+user visited it:
 
 \begin{frame}{Locations}
 \begin{itemize}
@@ -126,7 +133,19 @@ We need a database ...
 % https://pixabay.com/en/bottles-empty-glass-container-392689/
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=1\linewidth]{img/bottles.jpg}
+\includegraphics[width=0.8\linewidth]{img/bottles.jpg}
+\end{figure}
+\end{frame}
+
+Seriously, we are going to use a SQL database like
+PostgreSQL:
+
+\begin{frame}{Database}
+% https://en.wikipedia.org/wiki/PostgreSQL#/media/File:Postgresql_elephant.svg
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.4\linewidth]{img/postgresql.png}
+\caption{"Postgresql elephant" by Jeff MacDonald}
 \end{figure}
 \end{frame}
 
@@ -135,29 +154,24 @@ We need a database ...
 \item SQL is ... boring
 \item SQL is ... complex
 \item SQL is ... incompatible
+\item SQL is ... not object oriented
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Complex SQL query}
+%\begin{frame}{Complex SQL query}
 % add example for complex SQL query
-\end{frame}
-
-\begin{frame}{Squeeze OO}
-% OO supplied by DBIx::Class
-% DBIx::Class + Moo
-
-Object relationship manager (ORM)
-SQL => OO
-hashref => 
-
-\end{frame}
+%\end{frame}
 
 Just for the fun it, later you will learn how do you
 use DBIx::Class to retrieve hash references instead of
 objects!
 
 \begin{frame}{DBIx::Class to the rescue!}
-% DBIx::Class
+\centering
+DBIx::Class is a
+\begin{description}
+\item[ORM] Object Relationship Manager
+\end{description}
 \end{frame}
 
 \begin{frame}{Business Logic}
@@ -257,6 +271,14 @@ The following L<Connection attributes|DBIx::Class::Storage::DBI/DBIx::Class spec
 \end{lstlisting}
 \end{frame}
 
+\subsubsection{New Project}
+
+For new projects we recommend to write the schema first.
+
+\begin{frame}[fragile]{New Project}
+Write Schema first
+\end{frame}
+ 
 \section{DBIC Classes}
 
 \begin{frame}{DBIC Classes}
