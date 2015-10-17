@@ -591,23 +591,29 @@ So, let's recall the sample user data with
 \end{lstlisting}
 \end{frame}
 
+You can use \verb|find| to retrieve a single record from
+the database:
+
 \begin{frame}[fragile]{R - Retrieve}
 \begin{lstlisting}
 my $user = $schema->resultset('User')
     ->find( 4 );
 
 my $user = $schema->resultset('User')
-    ->find({ users_id => 1 });
+    ->find({ users_id => 4 });
 
 my $user = $schema->resultset('User')
     ->find({ nickname => 'Racke' });
 \end{lstlisting}
 \end{frame}
 
-DBIC's resultset search method does NOT cause the database backend to be
-hit. Only when methods such as all, count, first or next are called on the
-resultset is the query actually passed to the database (or when search is
-called in list context).
+% DBIC's resultset search method does NOT cause the database backend to be
+% hit. Only when methods such as all, count, first or next are called on the
+% resultset is the query actually passed to the database (or when search is
+% called in list context).
+
+You can use \verb|search| to retrieve a resultset record from
+the database:
 
 \begin{frame}[fragile]{R - Retrieve}
 \begin{lstlisting}
@@ -620,6 +626,10 @@ my $rs = $schema->resultset('User')
     ->search({ nickname => undef });
 \end{lstlisting}
 \end{frame}
+
+The resultset has various methods to retrieve information
+like the count of records and retrieve all records or
+one record after another:
 
 \begin{frame}[fragile]{R - Retrieve}
 \begin{lstlisting}
@@ -637,11 +647,11 @@ while ( my $user = $rs->next ) {
 \end{lstlisting}
 \end{frame}
 
-When searching for a single row via a column with a unique constraint (primary key or other unique constraint) find can be used to return a single row:
+% When searching for a single row via a column with a unique constraint (primary key or other unique constraint) find can be used to return a single row:
 
-If no key is specified, the search is carried over all unique constraints which are fully defined by the available condition.
+% If no key is specified, the search is carried over all unique constraints which are fully defined by the available condition.
 
-In addition to key, "find" recognizes and applies standard resultset attributes in the same way as "search" does (including joins, etc).
+% In addition to key, "find" recognizes and applies standard resultset attributes in the same way as "search" does (including joins, etc).
 
 \subsubsection{U - Update}
 
