@@ -1619,6 +1619,7 @@ my $rs = $schema->resultset('User')->search(
 
 This will return only as many row objects as there are Users. The many locations related to each user are available via the locations accessor thus:
 
+\begin{frame}[fragile]{collapse}
 \begin{lstlisting}
 while ( my $user = $rs->next ) {
     print "user " , $user->username ,
@@ -1630,6 +1631,92 @@ while ( my $user = $rs->next ) {
     }
 }
 \end{lstlisting}
+\end{frame}
+
+\subsubsection{prefetch}
+
+Value: \verb=$rel_name | \@rel_names | \%rel_names=
+
+This attribute is a shorthand for specifying a join spec, adding all columns
+from the joined related sources as +columns and setting collapse to a true
+value. It can be thought of as a rough superset of join. Both join and
+prefetch can be combined in a single search and DBIC will add columns
+appropriately.
+
+In the following query we join country in order to search by country name
+but we do not include any columns from the country table in the
+result. Using prefetch on locations means that all columns from the Location
+class will be available via the locations accessor accessor for each user
+object returned.
+
+\begin{frame}[fragile]{prefetch}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    {
+        'country.name' => 'Malta',
+    },
+    {
+        join => { locations => 'country' },
+        prefetch => 'locations',
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+This is equivalent to:
+
+\begin{frame}[fragile]{prefetch}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    {
+        'country.name' => 'Malta',
+    },
+    {
+        join => { locations => 'country' },
+        '+columns' => [
+            ( map { +{ "locations.$_" => "locations.$_" } }
+                  $schema->source('User')
+                    ->related_source('locations')->columns )
+        ],
+        collapse => 1,
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{page, rows and offset}
+
+\verb|page| makes the resultset paged and specifies the page to
+retrieve. Effectively identical to creating a non-paged resultset and then
+calling \verb|->page($page)| on it.
+
+If rows attribute is not specified it defaults to 10 rows per page.
+
+NOTE: When you have a paged resultset, count will only return the number of
+rows in the page. To get the total, use the pager and call total\_entries on
+it. 
+
+\verb|rows| specifies the maximum number of rows for direct retrieval, or
+the number of rows per page if the page attribute or method is used.
+
+\verb|offset|Specifies the (zero-based) row number for the first row to be
+returned. If the resultset is paged then the offset is relative to the
+current page.
+
+\begin{frame}[fragile]{page, rows and offset}
+Page 2 starts with the 6th row so this gives us rows 16 to 20:
+
+\begin{lstlisting}
+my $rs = $schema->resultset('Location')->search(
+    {},
+    {
+        page   => 2,
+        rows   => 5,
+        offset => 10,
+    }
+);
+\end{lstlisting}
+\end{frame}
 
 \subsection{Chaining}
 % from riba's slides
