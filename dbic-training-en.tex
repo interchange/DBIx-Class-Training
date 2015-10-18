@@ -313,6 +313,28 @@ sqlite> .exit
 \end{lstlisting}
 \end{frame}
 
+We are using a different schema name (\verb|TravelDance::MySchema|) here,
+otherwise dbicdump throws an error:
+
+\begin{lstlisting}
+Dumping manual schema for TravelDance::Schema to directory ./mylib ...
+Schema dump completed.
+Failed to reload class TravelDance::Schema::Result::Country: Inconsistent hierarchy during C3 merge of class 'TravelDance::Schema::Result::Country':
+	current merge results [
+		TravelDance::Schema::Result::Country,
+	]
+	merging failed on 'DBIx::Class::Core' at mylib/TravelDance/Schema/Result/Country.pm line 22.
+Compilation failed in require at (eval 105) line 2.
+.
+\end{lstlisting}
+
+\begin{frame}[fragile]{dbicdump Exercise: Create schema from database}
+\begin{lstlisting}
+dbicdump -o dump_directory=./mylib \\
+    TravelDance::MySchema dbi:SQLite:traveldance.db
+\end{lstlisting}
+\end{frame}
+
 \section{DBIC Classes}
 
 \begin{frame}{DBIC Classes}
