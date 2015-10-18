@@ -1416,6 +1416,112 @@ an existing column then it must be accessed via:
 $user->get_column('firstname');
 \end{lstlisting}
 
+Extra accessors can also be added - to be covered later.
+
+An equivalent result can be obtained using the select and as attributes:
+
+\begin{frame}[fragile]{columns}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        select => [ 'first_name', 'last_name' ],
+        as     => [ 'firstname', 'lastname' ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+NOTE: columns is generally preferred to select and as since it is much
+easier to read the intent from the code.
+
+\begin{frame}[fragile]{columns}
+Simple scalar:
+
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        columns => 'first_name'
+    }
+);
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{columns}
+Array reference with hash references:
+
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        columns => [ 'username', { name => 'first_name' } ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+columns: Using database functions or stored procedures
+
+\begin{frame}[fragile]{columns: Using database functions or stored
+    procedures}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    {},
+    {
+        columns => [
+            'username',
+            { username_length => 
+                { length => 'username' } }
+        ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
++columns
+
+\begin{frame}[fragile]{+columns}
+
+Works the same as columns but adds columns to the current selection.
+
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        join => 'locations',
+        '+columns' => [ 'locations.country_iso_code' ]
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+NOTE: must be quoted even when used on the left hand side of a 'fat comma'.
+
+In addition to +columns there are also +select and +as attributes which
+operate much like select and as except they are for adding columns. It is
+generally preferred to use +columns. The following are equivalent:
+
+\begin{frame}[fragile]{Equivalent of +columns with +select and +as}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(undef,
+    {
+        join => 'locations',
+        '+columns' => [ { code => 'locations.country_iso_code' } ]
+    }
+);
+
+my $rs = $schema->resultset('User')->search(undef,
+    {
+        join => 'locations',
+        '+select' => [ 'locations.country_iso_code' ],
+        '+as'     => [ 'code' ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
 \subsection{Chaining}
 % from riba's slides
 
