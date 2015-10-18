@@ -2384,14 +2384,15 @@ but using this helper makes things much simpler:
 
 \begin{frame}[fragile]{Helper::Resultset::Me}
 \begin{lstlisting}
-
 sub in_germany {
     my $self = shift;
+
+
     return $self->search(
         { $self->me('country_iso_code') => 'DE' }
     );
-}
 
+}
 \end{lstlisting}
 \end{frame}
 
