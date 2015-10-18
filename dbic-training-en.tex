@@ -241,10 +241,7 @@ The following L<Connection attributes|DBIx::Class::Storage::DBI/DBIx::Class spec
 \begin{frame}[fragile]{MySQL Connection attributes}
 \begin{lstlisting}
     mysql_enable_utf8 => 1,
-    on_connect_do     => [
-        q|SET SQL_MODE = CONCAT('ANSI,TRADITIONAL,', @@sql_mode)|,
-        q|SET SQL_AUTO_IS_NULL = 0|,
-    ],
+    set_strict_mode => 1,
 \end{lstlisting}
 \end{frame}
 
