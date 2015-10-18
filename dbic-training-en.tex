@@ -2496,10 +2496,10 @@ $rs->order_by('!col1')
 # { order_by => { -desc => 'col1' } }
 
 $rs->order_by('col1,col2')
-# { order_by => [ { -asc => 'col1' }, { -asc => 'col2' } ] }
+# { order_by => [{ -asc => 'col1' },{ -asc => 'col2' }]}
 
 $rs->order_by('col1,!col2')
-# { order_by => [ { -asc => 'col1' }, { -desc => 'col2' } ] }
+# { order_by => [{ -asc => 'col1' },{ -desc => 'col2' }]}
 \end{lstlisting}
 \end{frame}
 
