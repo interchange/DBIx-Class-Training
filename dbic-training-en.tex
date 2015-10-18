@@ -1668,18 +1668,18 @@ This is equivalent to:
 \begin{frame}[fragile]{prefetch}
 \begin{lstlisting}
 my $rs = $schema->resultset('User')->search(
-    {
-        'country.name' => 'Malta',
-    },
-    {
-        join => { locations => 'country' },
-        '+columns' => [
-            ( map { +{ "locations.$_" => "locations.$_" } }
-                  $schema->source('User')
-                    ->related_source('locations')->columns )
-        ],
-        collapse => 1,
-    }
+{
+    'country.name' => 'Malta',
+},
+{
+    join => { locations => 'country' },
+    '+columns' => [
+        ( map { +{ "locations.$_" => "locations.$_" } }
+              $schema->source('User')
+                ->related_source('locations')->columns )
+    ],
+    collapse => 1,
+}
 );
 \end{lstlisting}
 \end{frame}
