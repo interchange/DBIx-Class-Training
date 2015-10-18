@@ -278,7 +278,41 @@ For new projects we recommend to write the schema first.
 \begin{frame}[fragile]{New Project}
 Write Schema first
 \end{frame}
- 
+
+\subsubsection{Exercise I: dbicdump}
+\begin{frame}[fragile]{dbicdump Exercise}
+\begin{lstlisting}
+# clone training repository
+git clone git@github.com:interchange/DBIx-Class-Training.git
+cd DBIx-Class-Training/
+
+# deploy Sqlite database
+cd TravelDance
+./bin/db-deploy
+
+# explore
+sqlite3 traveldance.db
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{dbicdump Exercise: Explore Database}
+\begin{lstlisting}
+$ sqlite3 traveldance.db
+SQLite version 3.8.11.1 2015-07-29 20:00:57
+Enter ".help" for usage hints.
+sqlite> .tables
+countries  locations  users
+sqlite> .schema countries
+CREATE TABLE countries (
+  country_iso_code char(2) NOT NULL,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (country_iso_code)
+);
+CREATE INDEX idx_countries_name ON countries (name);
+sqlite> .exit
+\end{lstlisting}
+\end{frame}
+
 \section{DBIC Classes}
 
 \begin{frame}{DBIC Classes}
