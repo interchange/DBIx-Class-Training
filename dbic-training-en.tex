@@ -1684,6 +1684,66 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
+\subsubsection{order\_by}
+
+Value: \verb=$order_by | \%order_by | \@order_by=
+
+Which column(s) to order the results by. This can either be a scalar (just a
+column name), a hash reference of \verb|{ -desc => 'col' }| or 
+\verb|{ -asc => 'col' }|, or an array reference of either of the two
+previous forms.
+
+If a single column name, or an arrayref of names is supplied, the argument
+is passed through directly to SQL. To ensure database-agnostic ordering the
+hashref syntax should be used.
+
+\begin{frame}[fragile]{order\_by}
+\begin{table}
+\begin{tabular}{l | l}
+Given & Will Generate \\
+\hline
+\verb|'colA'| & ORDER BY colA \\ 
+\verb|[ 'colA', 'colB' ]| & ORDER BY colA, colB \\
+\verb|{ -asc => 'colA' }| & ORDER BY colA ASC \\
+\verb|{ -desc => 'colB' }| & ORDER BY colB DESC \\
+\verb|{ -asc => [ 'colA', 'colB' ] }| & ORDER BY colA ASC, colB ASC \\
+\verb|{ -asc  => 'colA' }, { -desc => [ 'colB' ] }, { -asc  => [ 'colC', 'colD' ] }|
+& ORDER BY colA ASC,
+     colB DESC,
+     colC ASC, colD ASC \\
+\end{tabular}
+\end{table}
+\end{frame}
+
+The old scalar reference syntax (i.e. \verb|order_by => \'year DESC'|) is
+still supported, although you are strongly encouraged to use the hashref
+syntax as outlined above.
+
+\subsubsection{group\_by}
+
+Value: \@columns
+
+A arrayref of columns to group by. Can include columns of joined tables.
+
+\begin{frame}[fragile]{group\_by}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    {},
+    {
+        columns    => 'username',
+        '+columns' => [ 
+            { country_name  => 'country.name' },
+            { country_count => {
+                count => 'country.country_iso_code' }
+            },
+        ],
+        join => { locations => 'country' },
+        group_by => [ 'me.username', 'country.name' ],
+    },
+);
+\end{lstlisting}
+\end{frame}
+
 \subsubsection{page, rows and offset}
 
 \verb|page| makes the resultset paged and specifies the page to
