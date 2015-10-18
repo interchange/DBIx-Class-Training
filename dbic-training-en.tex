@@ -1234,10 +1234,19 @@ methods.
 \end{frame}
 
 \subsubsection{join}
-Value: \verb=$rel_name | \@rel_names | \%rel_names=
 
-\begin{frame}[fragile]{Join}
 Simple join of a single relationship:
+
+\begin{frame}[fragile]{Simple join of a single relationship}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\linewidth]{img/join-simple.png}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[fragile]{Simple join of a single relationship}
 
 \begin{lstlisting}
 my $rs = $schema->resultset('User')->search(
@@ -1249,8 +1258,16 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Join}
 Join several relationships:
+
+\begin{frame}[fragile]{Join several relationships}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\linewidth]{img/join-several.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Join several relationships}
 
 \begin{lstlisting}
 my $rs = $schema->resultset('Location')->search(
@@ -1262,9 +1279,16 @@ my $rs = $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Join}
 Multi-level join:
 
+\begin{frame}[fragile]{Multi-level Join}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\linewidth]{img/join-multi-level.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Multi-level Join}
 \begin{lstlisting}
 my $rs = $schema->resultset('User')->search(
     undef,
@@ -1273,6 +1297,13 @@ my $rs = $schema->resultset('User')->search(
     }
 );
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Join}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.4\linewidth]{img/join-complex.png}
+\end{figure}
 \end{frame}
 
 \begin{frame}[fragile]{Join}
