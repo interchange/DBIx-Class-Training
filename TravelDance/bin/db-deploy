@@ -1,7 +1,18 @@
 #!/usr/bin/env perl
 
-use Dancer2;
-use Dancer2::Plugin::DBIC;
 use lib 'lib';
+use TravelDance::Schema;
 
-schema->deploy( { add_drop_table => 1 } );
+my $dsn        = 'dbi:SQLite:traveldance.db';
+my %dbi_params = (
+    RaiseError                 => 1,
+    PrintError                 => 1,
+    on_connect_call            => 'use_foreign_keys',
+    quote_names                => 1,
+    sqlite_unicode             => 1,
+    sqlite_see_if_its_a_number => 1,
+);
+
+my $schema = TravelDance::Schema->connect( $dsn,,, \%dbi_params );
+
+$schema->deploy( { add_drop_table => 1 } );

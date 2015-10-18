@@ -1,0 +1,6 @@
+requires "Class::Method::Modifiers"      => "0";
+requires "DBD::SQLite"                   => "0";
+requires "DBIx::Class::Candy"            => "0.005000";
+requires "DBIx::Class::PassphraseColumn" => "0";
+requires "DBIx::Class::TimeStamp"        => "0";
+requires "Locale::SubCountry"            => "0";
