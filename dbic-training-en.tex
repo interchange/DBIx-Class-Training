@@ -1578,6 +1578,58 @@ my $rs = $schema->resultset('User')->search(undef,
 \end{lstlisting}
 \end{frame}
 
+\subsubsection{collapse}
+
+Value: [ 0 | 1 ] - defaults to 0
+
+When set to a true value, indicates that any rows fetched from joined
+has\_many relationships are to be aggregated into the corresponding "parent"
+object. For example:
+
+\begin{frame}[fragile]{collapse}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        join       => 'locations',
+        '+columns' => [ 'locations.country_iso_code' ],
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+This will return as many row objects as there locations since User has\_many
+locations.
+
+Compare with:
+
+\begin{frame}[fragile]{collapse}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        join       => 'locations',
+        '+columns' => [ 'locations.country_iso_code' ],
+        collapse   => 1,
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+This will return only as many row objects as there are Users. The many locations related to each user are available via the locations accessor thus:
+
+\begin{lstlisting}
+while ( my $user = $rs->next ) {
+    print "user " , $user->username ,
+        " has the following country codes:\n";
+
+    my $locations_rs = $user->locations;
+    while ( my $location = $locations_rs->next ) {
+        print "\t" , $location->country_iso_code , "\n";
+    }
+}
+\end{lstlisting}
+
 \subsection{Chaining}
 % from riba's slides
 
