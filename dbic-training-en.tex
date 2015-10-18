@@ -1348,6 +1348,8 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
+\begin{frame}[fragile]{columns}
+
 An equivalent result can be obtained using the select attribute:
 \begin{lstlisting}
 my $rs = $schema->resultset('User')->search(
@@ -1357,20 +1359,28 @@ my $rs = $schema->resultset('User')->search(
     }
 );
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{columns}
 
 Hash reference:
+
 \begin{lstlisting}
 my $rs = $schema->resultset('User')->search(
     undef,
     {
         columns => {
-            firstname => first_name, lastname => last_name
+            firstname => 'first_name',
+            lastname => 'last_name',
         }
     }
 );
 \end{lstlisting}
+\end{frame}
 
-If the alias used (firstname/lastname in the example) does not correspond to an existing column then it must be accessed via:
+If the alias used (firstname/lastname in the example) does not correspond to
+an existing column then it must be accessed via:
+
 \begin{lstlisting}
 $user->get_column('firstname');
 \end{lstlisting}
