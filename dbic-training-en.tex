@@ -102,7 +102,7 @@ competition between who visited the most countries:
 \begin{itemize}
 \item Countries
 \item Users
-\item VisitedPlaces
+\item Visited places
 \end{itemize}
 \end{frame}
 
@@ -494,59 +494,6 @@ many_to_many users => "places_visited", "user";
 \end{frame}
 
 \subsubsection{PlaceVisited Result Class}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-package TravelDance::Schema::Result::PlaceVisited;
-use TravelDance::Schema::Candy;
-
-primary_column locations_id => {
-    data_type         => "integer",
-    is_auto_increment => 1,
-};
-column address => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-column address_2 => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-
-1;
-\end{lstlisting}
-\end{frame}
-\subsubsection{User Result Class}
-
-The user result class has the primary key \verb|users_id| and the
-unique column \verb|nickname|:
-
-\begin{frame}[fragile]{User Result Class}
-\begin{lstlisting}
-package TravelDance::Schema::Result::User;
-
-primary_column users_id => {
-    data_type         => "integer",
-    is_auto_increment => 1,
-};
-
-unique_column nickname => {
-    data_type   => "varchar",
-    is_nullable => 1,
-    size        => 255,
-};
-\end{lstlisting}
-\end{frame}
-
-\verb|nickname| is not required, so we can have multiple
-rows without nickname in the table.
 
 Here we see sample data for these fields in the
 \verb|users| table:
