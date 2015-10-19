@@ -674,6 +674,88 @@ Here we see sample data for these fields in the
 \end{lstlisting}
 \end{frame}
 
+\subsection{DBIx::Class::Schema::Config}
+
+\begin{frame}{DBIx::Class::Schema::Config}
+\begin{itemize}
+\item Credential Management for DBIx::Class.
+\item Move DSN, username, password out of code
+\end{itemize}
+\end{frame}
+
+\subsubsection{Typical script for DBIx::Class}
+\begin{frame}[fragile]{Typical script for DBIx::Class}
+\begin{lstlisting}
+use TravelDance::Schema;
+my $dsn = 'dbi:SQLite:traveldance.db';
+my %dbi_params = (
+    RaiseError                 => 1,
+    PrintError                 => 1,
+    on_connect_call            => 'use_foreign_keys',
+    quote_names                => 1,
+    sqlite_unicode             => 1,
+    sqlite_see_if_its_a_number => 1,
+);
+my $schema = TravelDance::Schema->connect( $dsn,,, 
+    \%dbi_params );
+\end{lstlisting}
+\end{frame}
+
+Move the DBIC config to \textasciitilde/.dbic.yml:
+
+\begin{frame}[fragile]{Configuration File \textasciitilde/.dbic.yml}
+\begin{lstlisting}
+traveldance:
+  dsn: 'dbi:SQLite:traveldance.db'
+  RaiseError: 1
+  PrintError: 1
+  on_connect_call: 'use_foreign_keys'
+  quote_names: 1
+  sqlite_unicode: 1
+  sqlite_see_if_its_a_number: 1
+\end{lstlisting}
+\end{frame}
+
+Now we adjust the schema class and the script to use
+the configuration file:
+
+\begin{frame}[fragile]{Using the configuration file}
+Change the base class of the Schema:
+
+\begin{lstlisting}
+package TravelDance::Schema;
+use base 'DBIx::Class::Schema::Config';
+\end{lstlisting}
+
+Update the script:
+
+\begin{lstlisting}
+use TravelDance::Schema;
+my $schema = TravelDance::Schema
+   ->connect( 'traveldance' );
+\end{lstlisting}
+\end{frame}
+
+Configuration format and files:
+
+\begin{frame}[fragile]{Configuration format and files}
+\begin{itemize}
+\item Config::Any
+\begin{itemize}
+\item YAML
+\item JSON
+\item ...
+\item \sout{XML}
+\end{itemize}
+\item File locations
+\begin{description}
+\item[system-wide] \verb|/etc/dbic.*|
+\item[user] \verb|~/.dbic.*|
+\item[project] \verb|./dbic.*|
+\end{description}
+\end{itemize}
+\end{frame}
+
 \section{CRUD and Beyond}
 \begin{frame}{CRUD and Beyond}
 \begin{itemize}
