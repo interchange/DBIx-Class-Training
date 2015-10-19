@@ -1837,7 +1837,82 @@ my $rs = $schema->resultset('Location')->search(
 \end{frame}
 
 \subsection{Correlated Subqueries}
-\begin{frame}{Correlated Subqueries}
+
+We want a list of all users complete with a count of locations for each. The
+obvious approach is to use a join:
+
+\begin{frame}[fragile]{Correlated Subqueries}
+\begin{lstlisting}
+my $rs = $schema->resultset('User')->search(
+    undef,
+    {
+        join       => 'locations',
+        '+columns' => {
+            location_count => {
+                count => 'locations.id'
+            }
+        },
+        # let DBIC work out group_by for us
+        distinct   => 1,    
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+This causes some problems:
+
+Depending on database engine, COUNT’s that aren’t COUNT(*) tend to be slow
+as they do table scans. 
+This is hard to chain since we've introduced JOIN and GROUP BY and collapsed
+COUNTs might produce unexpected results. 
+We cannot add other interesting data from the locations in the same query
+(such as date of most recent visit).
+
+\subsubsection{Correlated subqueries in the traditional way}
+
+\begin{frame}[fragile]{Correlated Subqueries in the traditional way}
+\begin{lstlisting}
+my $location_rset = resultset('Location');
+my $rs = resultset('User')->search(undef,
+    {
+        '+columns' => {
+            location_count => $location_rset->search(
+                {
+                    "locations_alias.users_id" =>
+                      { -ident => "me.users_id" },
+                },
+                {
+                    alias => 'locations_alias'
+                },
+            )->count_rs->as_query
+        },
+    }
+);
+\end{lstlisting}
+\end{frame}
+
+This is much faster and always chainable since no JOIN, GROUP BY, or other junk added to query BUT it is way too much code, so...
+
+\subsubsection{Helper::ResultSet::CorrelateRelationship}
+
+This time we'll also include the date of the latest trip:
+
+\begin{frame}[fragile]{Helper::ResultSet::CorrelateRelationship}
+\begin{lstlisting}
+my $user_rset = resultset('User');
+$user_rset->search(
+    undef,
+    {
+      '+columns' => {
+          location_count => $user_rset->correlate('locations')
+                               ->count_rs->as_query,
+          latest_trip => $user_rset->correlate('locations')
+                               ->get_column('visited')
+                               ->max_rs->as_query,
+      },
+    }
+);
+\end{lstlisting}
 \end{frame}
 
 \section{Relationships}
