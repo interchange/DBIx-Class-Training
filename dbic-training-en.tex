@@ -102,14 +102,14 @@ competition between who visited the most countries:
 \begin{itemize}
 \item Countries
 \item Users
-\item Locations
+\item VisitedPlaces
 \end{itemize}
 \end{frame}
 
-Locations include the country and the date when the 
+VisitedPlaces include the country and the date when the 
 user visited it:
 
-\begin{frame}{Locations}
+\begin{frame}{VisitedPlaces}
 \begin{itemize}
 \item Country
 \item User
@@ -179,7 +179,7 @@ PostgreSQL:
 \begin{itemize}
 \item SQL is ... boring
 \item SQL is ... complex
-\item SQL is ... incompatible
+\item SQL is ... governed by "15 competing standards"
 \item SQL is ... not object oriented
 \end{itemize}
 \end{frame}
@@ -227,12 +227,12 @@ application.
 \begin{itemize}
 \item Extensive
 \begin{itemize}
-\item \verb|DBIx::Class::Manual::Cookbook|
 \item \verb|DBIx::Class::Manual::*|
+\item \verb|DBIx::Class::Manual::ResultClass|
+\item \verb|DBIx::Class::ResultSet|
+\item \verb|DBIx::Class::Relationship::*|
 \end{itemize}
-\item Parts Outdated
-\item Parts Wrong
-\item Nice things missing
+\item Extra goodies
 \begin{itemize}
 \item \verb|DBIx::Class::Candy|
 \item \verb|DBIx::Class::Helpers|
@@ -291,14 +291,14 @@ dbicdump -o dump_directory=/home/dance/TravelDance/lib
 Starting a new project involves creating a database, which
 isn't as simple as you would think.
 
-MySQL databases should be created with UTF8 encoding and appropriate 
+MySQL databases should be created with proper UTF8 encoding and appropriate 
 collation for your local, for example:
 
 \begin{frame}[fragile]{Creating MySQL database}
 \begin{lstlisting}
     CREATE DATABASE "my_shop_db"
-        DEFAULT CHARACTER SET utf8
-        DEFAULT COLLATE utf8_general_ci;
+        DEFAULT CHARACTER SET utf8mb4
+        DEFAULT COLLATE utf8mb4_unicode_ci;
 \end{lstlisting}
 \end{frame}
 
@@ -363,7 +363,7 @@ $ sqlite3 traveldance.db
 SQLite version 3.8.11.1 2015-07-29 20:00:57
 Enter ".help" for usage hints.
 sqlite> .tables
-countries  locations  users
+countries  visitedplaces  users
 sqlite> .schema countries
 CREATE TABLE countries (
   country_iso_code char(2) NOT NULL,
@@ -426,10 +426,10 @@ dbicdump -o dump_directory=./mylib \
 \begin{itemize}
 \item TravelDance::Schema
 \end{itemize}
-\item One result class for each table
+\item One result class for each source ( table, view, SQL fragment, etc )
 \begin{itemize}
 \item TravelDance::Schema::Result::Country
-\item TravelDance::Schema::Result::Location
+\item TravelDance::Schema::Result::PlaceVisited
 \item TravelDance::Schema::Result::User
 \end{itemize}
 \end{itemize}
@@ -460,7 +460,7 @@ for Result and ResultSet classes and loads them into the schema.
 \begin{itemize}
 \item Need one result class for each table
 \item Country => countries
-\item Location => locations
+\item PlaceVisited => placesvisited
 \item User => users
 \end{itemize}
 \end{frame}
@@ -510,13 +510,13 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("country_iso_code");
 
 __PACKAGE__->has_many(
-    locations =>
-      "TravelDance::Schema::Result::Location",
+    places_visited =>
+      "TravelDance::Schema::Result::PlaceVisited",
       'country_iso_code'
 );
 
 __PACKAGE__->many_to_many(
-    users => "locations", "user"
+    users => "places_visited", "user"
 );
 
 1;
@@ -544,11 +544,47 @@ column name => {
 
 \begin{frame}[fragile]{Candy DBIC Result Class for Country II}
 \begin{lstlisting}
-has_many locations =>
-  "TravelDance::Schema::Result::Location",
+has_many
+  places_visited =>
+  "TravelDance::Schema::Result::PlaceVisited",
   'country_iso_code';
 
-many_to_many users => "locations", "user";
+many_to_many users => "places_visited", "user";
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{PlaceVisited Result Class}
+
+\begin{frame}[fragile]{User / Vanilla DBIx::Class}
+\begin{lstlisting}
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+package TravelDance::Schema::Result::PlaceVisited;
+use TravelDance::Schema::Candy;
+
+primary_column locations_id => {
+    data_type         => "integer",
+    is_auto_increment => 1,
+};
+column address => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{User / DBIx::Class::Candy}
+\begin{lstlisting}
+column address_2 => {
+    data_type     => "varchar",
+    default_value => "",
+    size          => 255,
+};
 
 1;
 \end{lstlisting}
@@ -994,7 +1030,7 @@ $schema->resultset('Location')->search(
 \end{frame}
 
 \begin{frame}[fragile]{Simple OR / AND}
-Locations with city='Paris' OR region='Gozo':
+VisitedPlaces with city='Paris' OR region='Gozo':
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1007,7 +1043,7 @@ $schema->resultset('Location')->search(
 \end{frame}
 
 \begin{frame}[fragile]{Simple OR / AND}
-Locations in Germany AND city='Hannover':
+VisitedPlaces in Germany AND city='Hannover':
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1021,7 +1057,7 @@ $schema->resultset('Location')->search(
 
 \subsubsection{Combining OR and AND}
 
-Locations in Germany AND ( city='Hannover' OR city='Berlin' ):
+VisitedPlaces in Germany AND ( city='Hannover' OR city='Berlin' ):
 
 \begin{frame}[fragile]{Combining OR and AND}
 
@@ -1167,7 +1203,7 @@ OR ( region starts with 'A' AND ends with 'r' )
 \subsubsection{Special operators: -in / -not\_in}
 \begin{frame}[fragile]{Special operators: -in / -not\_in}
 
-Locations where country is Germany, Malta or France:
+VisitedPlaces where country is Germany, Malta or France:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1178,7 +1214,7 @@ $schema->resultset('Location')->search(
 );
 \end{lstlisting}
 
-Locations where country is NOT Germany, Malta or France:
+VisitedPlaces where country is NOT Germany, Malta or France:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1227,7 +1263,7 @@ $schema->resultset('Location')->search(
 
 \begin{frame}[fragile]{Unary operators: -bool / -not\_bool}
 
-Locations where home\_location is true:
+VisitedPlaces where home\_location is true:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1237,7 +1273,7 @@ $schema->resultset('Location')->search(
 );
 \end{lstlisting}
 
-Locations where home\_location is false:
+VisitedPlaces where home\_location is false:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1269,7 +1305,7 @@ NOT ( country is Germany OR Malta )
 \subsubsection{Undefined (NULL) values}
 \begin{frame}[fragile]{Undefined (NULL) values}
 
-Locations with NO country:
+VisitedPlaces with NO country:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1279,7 +1315,7 @@ $schema->resultset('Location')->search(
 );
 \end{lstlisting}
 
-Locations with a defined country:
+VisitedPlaces with a defined country:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1297,7 +1333,7 @@ is an identifier (a column name) and not a value.
 
 \begin{frame}[fragile]{Value type operators: -ident}
 
-Locations where region and city have the same name:
+VisitedPlaces where region and city have the same name:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -2172,7 +2208,7 @@ primary_column users_id => {
 
 And since we expect each user to have many locations we define the relationship as a \verb|has_many|:
 
-\begin{frame}[fragile]{Locations Relationship}
+\begin{frame}[fragile]{VisitedPlaces Relationship}
 \begin{lstlisting}
 has_many locations =>
   "TravelDance::Schema::Result::Location",
@@ -3157,7 +3193,7 @@ sub change_password {
 \subsection{Helper::Schema::DateTime}
 
 \begin{frame}[fragile]{Helper::Schema::DateTime}
-Locations visited in the last year:
+VisitedPlaces visited in the last year:
 
 \begin{lstlisting}
 my $one_year_ago = $schema->format_datetime(
