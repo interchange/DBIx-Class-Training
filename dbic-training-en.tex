@@ -1878,9 +1878,7 @@ my $rs = resultset('User')->search(undef,
                     "locations_alias.users_id" =>
                       { -ident => "me.users_id" },
                 },
-                {
-                    alias => 'locations_alias'
-                },
+                { alias => 'locations_alias' },
             )->count_rs->as_query
         },
     }
