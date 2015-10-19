@@ -1179,49 +1179,6 @@ $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Unary operators: -bool / -not\_bool}
-
-\begin{frame}[fragile]{Unary operators: -bool / -not\_bool}
-
-VisitedPlaces where home\_location is true:
-
-\begin{lstlisting}
-$schema->resultset('Location')->search(
-    {
-        -bool => 'home_location'
-    }
-);
-\end{lstlisting}
-
-VisitedPlaces where home\_location is false:
-
-\begin{lstlisting}
-$schema->resultset('Location')->search(
-    {
-        -not_bool => 'home_location'
-    }
-);
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Unary operators: -bool / -not\_bool}
-
-These operators can be used to check any truth value such as:
-
-\begin{lstlisting}
-$schema->resultset('Location')->search(
-    {
-        -not_bool => { 
-          country_iso_code => [ 'DE', 'MT' ] }
-    }
-);
-\end{lstlisting}
-
-Which is like saying:
-
-NOT ( country is Germany OR Malta )
-\end{frame}
-
 \subsubsection{Undefined (NULL) values}
 \begin{frame}[fragile]{Undefined (NULL) values}
 
