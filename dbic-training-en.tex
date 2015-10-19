@@ -351,7 +351,7 @@ dbicdump -o dump_directory=./mylib \
 \end{lstlisting}
 \end{frame}
 
-\section{DBIC Classes}
+\subsection{DBIC Classes}
 
 \begin{frame}{DBIC Classes}
 \begin{itemize}
@@ -369,7 +369,7 @@ dbicdump -o dump_directory=./mylib \
 \end{itemize}
 \end{frame}
 
-\subsection{Schema Class}
+\subsubsection{Schema Class}
 
 Here we see the minimal DBIx::Class schema definition:
 
@@ -388,7 +388,7 @@ __PACKAGE__->load_namespaces();
 \verb|load_components| searches \verb|TravelDance::Schema::Result{Set}::*|
 for Result and ResultSet classes and loads them into the schema.
 
-\subsection{Result Classes}
+\subsubsection{Result Classes}
 
 \begin{frame}{Result Classes}
 \begin{itemize}
@@ -414,7 +414,7 @@ See \href{https://metacpan.org/pod/DBIx::Class::ResultSource}{DBIx::Class::Resul
 \end{itemize}
 \end{frame}
 
-\subsection{Country Result Class}
+\subsubsection{Country Result Class}
 
 \begin{frame}[fragile]{Country / Vanilla DBIx::Class}
 \begin{lstlisting}
@@ -477,7 +477,7 @@ many_to_many users => "locations", "user";
 \end{lstlisting}
 \end{frame}
 
-\subsection{Location Result Class}
+\subsubsection{Location Result Class}
 
 \begin{frame}[fragile]{User / Vanilla DBIx::Class}
 \begin{lstlisting}
@@ -563,7 +563,7 @@ belongs_to user => "TravelDance::Schema::Result::User",
 \end{lstlisting}
 \end{frame}
 
-\subsection{User Result Class}
+\subsubsection{User Result Class}
 
 The user result class has the primary key \verb|users_id| and the
 unique column \verb|nickname|:
