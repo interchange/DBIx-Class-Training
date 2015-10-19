@@ -276,7 +276,7 @@ For new projects we recommend to write the schema first.
 Write Schema first
 \end{frame}
 
-\subsubsection{Exercise I: dbicdump}
+\subsection{Exercise I: dbicdump}
 \begin{frame}[fragile]{dbicdump Exercise}
 \begin{lstlisting}
 # clone training repository
@@ -329,6 +329,26 @@ Compilation failed in require at (eval 105) line 2.
 \begin{lstlisting}
 dbicdump -o dump_directory=./mylib \\
     TravelDance::MySchema dbi:SQLite:traveldance.db
+\end{lstlisting}
+
+Now check the files in \verb|./mylib| ...
+\end{frame}
+
+\begin{frame}[fragile]{dbicdump Exercise: Create schema from database}
+\begin{lstlisting}
+# add a column to locations table:
+
+sqlite> 
+alter table locations add column latitude float(20);
+
+# run dbicdump again
+
+dbicdump -o dump_directory=./mylib \\
+    TravelDance::MySchema dbi:SQLite:traveldance.db
+
+# Check for the new column:
+./mylib/TravelDance/MySchema/Result/Location.pm 
+
 \end{lstlisting}
 \end{frame}
 
