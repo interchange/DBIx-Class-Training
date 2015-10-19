@@ -2157,15 +2157,7 @@ belongs_to
 \end{lstlisting}
 \end{frame}
 
-\section{Extending Schema}
-\begin{frame}{Extending Schema}
-\begin{itemize}
-\item Components
-\item Helpers
-\end{itemize}
-\end{frame}
-
-\subsection{Components}
+\section{Components}
 DBIx::Class uses \href{https://metacpan.org/pod/Class::C3::Componentised}
 {Class::C3::Componentised} to allow mix-ins (components) to be added to the 
 various classes that together comprise the schema definition. 
@@ -2182,7 +2174,7 @@ There are three different kinds of components:
  
 Many components exist for all of these three kinds.
 
-\subsubsection{Schema Components}
+\subsection{Schema Components}
 
 Loading a component to your main Schema class:
 
@@ -2196,7 +2188,7 @@ __PACKAGE__->load_components(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Using Result Class Components}
+\subsection{Using Result Class Components}
 
 In a single result class:
 
@@ -2216,7 +2208,7 @@ In order to add a result class component to \emph{all} result classes you
 can add these to the list 
 in \verb|TravelDance::Schema::Candy|'s \verb|parse_arguments|.
 
-\paragraph{Password/passphrase columns}
+\subsubsection{Password/passphrase columns}
 
 DBIx::Class::PassphraseColumn uses the column definition when hashing a new
 password/passphrase but can test the password against many types of hash
@@ -2240,7 +2232,7 @@ column password => {
 \end{lstlisting}
 \end{frame}
 
-\paragraph{Automatic setting of date/datetime columns on create/update}
+\subsubsection{Automatic setting of date/datetime columns on create/update}
 DBIx::Class::TimeStamp
 
 From User class:
@@ -2261,7 +2253,7 @@ column last_modified => {
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Automatic DateTime inflation from columns}
+\subsection{Automatic DateTime inflation from columns}
 
 Using DBIx::Class::InflateColumn::DateTime we can have date and datetime
 columns automatically converted to DateTime objects when retrieved from the
@@ -2278,7 +2270,7 @@ does not understand resulting in an exception rather than the DateTime
 object you are expecting. The rule is \verb|always| pass DateTime objects when
 creating/updating a column with this inflator in place.
 
-\subsubsection{ResultSet Components}
+\subsection{ResultSet Components}
 
 In order to be able to add a component to all ResultSet classes we need to
 do:
@@ -2294,7 +2286,7 @@ do:
 \end{itemize}
 \end{frame}
 
-\paragraph{Create Parent Class}
+\subsubsection{Create Parent Class}
 
 \begin{frame}[fragile]{Create Parent Class}
 \begin{lstlisting}
@@ -2306,7 +2298,7 @@ __PACKAGE__->load_components("TimeStamp");
 \end{lstlisting}
 \end{frame}
 
-\paragraph{Set as Default Resultset Class}
+\subsubsection{Set as Default Resultset Class}
 
 \begin{frame}[fragile]{Set as Default Resultset Class}
 \begin{lstlisting}
@@ -2319,7 +2311,7 @@ __PACKAGE__->load_namespaces(
 \end{lstlisting}
 \end{frame}
 
-\paragraph{Inherit from Parent Class}
+\subsubsection{Inherit from Parent Class}
 \begin{frame}[fragile]{Inherit from Parent Class}
 \begin{lstlisting}
 package TravelDance::Schema::ResultSet::User;
@@ -2332,7 +2324,7 @@ __PACKAGE__->load_components(
 \end{lstlisting}
 \end{frame}
 
-\subsection{DBIx::Class Helpers}
+\section{DBIx::Class Helpers}
 
 \begin{frame}{CorrelateRelationship}
 
@@ -2455,7 +2447,7 @@ Cool example from Interchange6::Schema::ResultSet::Product :
     }
 \end{lstlisting}
 
-\subsubsection{Helper::Resultset::Me}
+\subsection{Helper::Resultset::Me}
 
 Predefined queries present a problem: what is the table alias I need to use?
 We can do:
@@ -2490,7 +2482,7 @@ sub in_germany {
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::Resultset::Random}
+\subsection{Helper::Resultset::Random}
 
 We use this in Interchange6 for finding random 'similar products' and other
 such searches.
@@ -2505,7 +2497,7 @@ my $countries = $schema->resultset('Country')->rand(3);
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::ResultSet::RemoveColumns}
+\subsection{Helper::ResultSet::RemoveColumns}
 Have a result class with a large number of columns and you want all except
 one (or more) of them:
 
@@ -2532,7 +2524,7 @@ __PACKAGE__->resultset_attributes(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::ResultSet::Shortcut}
+\subsection{Helper::ResultSet::Shortcut}
 
 \begin{frame}[fragile]{distinct Shortcut}
 
@@ -2849,7 +2841,7 @@ $rs->search(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::Row::NumifyGet}
+\subsection{Helper::Row::NumifyGet}
 
 \begin{frame}[fragile]{Helper::Row::NumifyGet}
 
@@ -2880,7 +2872,7 @@ sub TO_JSON {
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::Row::OnColumnChange}
+\subsection{Helper::Row::OnColumnChange}
 
 \begin{frame}[fragile]{Helper::Row::OnColumnChange}
 
@@ -2947,7 +2939,7 @@ sub change_password {
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::Schema::DateTime}
+\subsection{Helper::Schema::DateTime}
 
 \begin{frame}[fragile]{Helper::Schema::DateTime}
 Locations visited in the last year:
@@ -2983,7 +2975,7 @@ my $rs = $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Helper::QuoteNames}
+\subsection{Helper::QuoteNames}
 
 \begin{frame}{Helper::QuoteNames}
 This should always be used. Force quote\_names in your database
