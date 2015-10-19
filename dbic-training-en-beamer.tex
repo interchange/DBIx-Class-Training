@@ -1,5 +1,5 @@
 \documentclass[ignorenonframetext]{beamer}
-\usepackage{beamerthemesplit}
+% \usepackage{beamerthemesplit}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{mathptmx}
@@ -13,10 +13,15 @@
 \usepackage{ulem}
 \usepackage{gensymb} % degree
 \lstset{language=Perl,basicstyle=\ttfamily\small,tabsize=3,showstringspaces=false}
-\usetheme{Madrid}
+\usetheme{CambridgeUS}
 
 \defbeamertemplate{description item}{align left}{\insertdescriptionitem\hfill}
 \setbeamertemplate{description item}[align left]
+
+\title{DBIx::Class Training}
+\author{S. Hornburg (Racke), P. Mottram (SysPete)}
+\date{Perl Dancer Conference 2015}
+
 
 \input{dbic-training-en.tex}
 
