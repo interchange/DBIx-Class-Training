@@ -25,6 +25,16 @@ The following components are loaded:
 use TravelDance::Schema::Candy -components =>
   [qw(InflateColumn::DateTime TimeStamp)];
 
+=head1 TABLE
+
+Table: places_visited
+
+Candy autotable doesn't always create a good table name.
+
+=cut
+
+table 'places_visited';
+
 =head1 ACCESSORS
 
 =head2 place_id
