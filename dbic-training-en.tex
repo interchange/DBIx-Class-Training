@@ -1912,6 +1912,136 @@ $user_rset->search(
 \end{lstlisting}
 \end{frame}
 
+
+\subsection{Where's my cow?}
+
+\begin{frame}{Where's my cow?}
+% https://pixabay.com/en/cow-animal-milk-cow-meadow-alpine-950227/
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.7\linewidth]{img/cow.jpg}
+\end{figure}
+\end{frame}
+
+\subsubsection{Where's my cow column?}
+
+\begin{frame}[fragile]{Where's my cow column?}
+\begin{lstlisting}
+package TravelDance::Schema::ResultSet::User;
+
+sub with_location_count {
+  my $self = shift;
+  return $self->search(undef,
+    {
+      '+columns' => {
+        location_count =>
+          $self->correlate('locations')
+            ->count_rs->as_query
+      },
+    });
+}
+\end{lstlisting}
+\end{frame}
+
+Elsewhere in your code…
+
+\begin{frame}[fragile]{Where's my cow column?}
+\begin{lstlisting}
+my $rs = $schema->resultset('User');
+while ( my $user = $rs->next ) {
+    print $user->location_count; 
+    # Exception! That's not my cow
+
+    # Instead you need:
+    print $user->get_column('location_count'); 
+    # That's my cow
+}
+\end{lstlisting}
+\end{frame}
+
+Bah! That sucks.
+
+Add an accessor:
+
+\begin{frame}[fragile]{Where's my cow: Add an accessor}
+\begin{lstlisting}
+
+package TravelDance::Schema::Result::User;
+
+# Define accessor manually:
+sub location_count { shift->get_column('location_count'); }
+
+# Or use DBIx::Class::AccessorGroup:
+__PACKAGE__->mk_group_accessors('column' => 'location_count');
+
+\end{lstlisting}
+\end{frame}
+
+This is all good as long as we have done a search on the User resultset
+using the with\_location\_count method, but what if we want to be able to call
+the location\_count method directly on a User result object that was not the
+result of this search such as:
+
+\begin{frame}[fragile]{Where's my cow column?}
+\begin{lstlisting}
+my $user = $schema->resultset('User')->find(
+    { username => 'barneyrubble' });
+
+print $user->location_count;
+\end{lstlisting}
+\end{frame}
+
+We could build ourselves a new result class method:
+
+\begin{frame}[fragile]{Add an accessor}
+\begin{lstlisting}
+package TravelDance::Schema::Result::User;
+
+sub location_count {
+    my $self = shift;
+    if ( $self->has_column('location_count') ) {
+        # must have come from with_location_called
+        return $self->get_column('location_count');
+    }
+    else {
+        return $self->locations->count;
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+But this is a lot of boilerplate and there is a nice helper available:
+
+\begin{frame}[fragile]{Where's my cow: Use a helper}
+\begin{lstlisting}
+package TravelDance::Schema::Result::User;
+
+use TravelDance::Schema::Candy -components =>
+    ['Helper::Row::ProxyResultSetMethod'];
+
+proxy_resultset_method 'location_count';
+\end{lstlisting}
+\end{frame}
+
+Now if location\_count is already cached via the with\_location\_count
+method on the User resultset then that value is returned. If not then the
+resultset method is called immediately so that the data is added to the user
+object. Now we can always call:
+
+\verb|$user->location_count|
+
+and we don't have to worry about whether or not we already called the
+with\_location\_count method on the resultset. From a performance viewpoint
+(hitting the db) you should still remember to call the resultset method on
+your User resultsets if using search. 
+
+CAVEAT: if you do something like 
+\verb|$user->create_related('locations', [{...}])|
+on a User object from a resultset that has had with\_location\_count
+previously called on it then when you subsequently call location\_count on
+the User object the count will not include the extra locations you just
+added. A new search will be needed to correct the count in this case.
+
 \section{Relationships}
 
 \begin{frame}{Relationships}
