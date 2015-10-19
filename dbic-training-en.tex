@@ -645,17 +645,7 @@ Configuration format and files:
 \end{itemize}
 \end{frame}
 
-\section{CRUD and Beyond}
-\begin{frame}{CRUD and Beyond}
-\begin{itemize}
-\item CRUD Basics
-\item CRUD Methods
-\item Search conditions and attributes
-\item Chaining
-\end{itemize}
-\end{frame}
-
-\subsection{CRUD}
+\section{CRUD}
 
 CRUD is defined as:
 
@@ -668,7 +658,7 @@ CRUD is defined as:
 \end{description}
 \end{frame}
 
-\subsubsection{C - Create}
+\subsection{C - Create}
 \begin{frame}[fragile]{C - Create}
 Create in the simplest form:
 
@@ -685,7 +675,7 @@ my $user = $schema->resultset('User')->create(
 
 Tip: do not pass in primary key field if it is auto-increment since that will be added automatically.
 
-\subsubsection{C++ - Multi Create}
+\subsection{C++ - Multi Create}
 It's even possible to create an user and corresponding locations at the
 same time:
 
@@ -708,7 +698,7 @@ my $user = $schema->resultset('User')->create(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{R - Retrieve}
+\subsection{R - Retrieve}
 
 So, let's recall the sample user data with
 \verb|users_id| and \verb|nickname|:
@@ -788,7 +778,7 @@ while ( my $user = $rs->next ) {
 
 % In addition to key, "find" recognizes and applies standard resultset attributes in the same way as "search" does (including joins, etc).
 
-\subsubsection{U - Update}
+\subsection{U - Update}
 
 One row only:
 
@@ -819,7 +809,7 @@ $rs->update({ fail_count => 0 });
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{D - Delete}
+\subsection{D - Delete}
 
 One row only:
 
@@ -837,6 +827,17 @@ my $rs = $schema->resultset('User')->search(...);
 $rs->delete;
 \end{lstlisting}
 \end{frame}
+
+\section{CRUD and Beyond}
+\begin{frame}{CRUD and Beyond}
+\begin{itemize}
+\item CRUD Basics
+\item CRUD Methods
+\item Search conditions and attributes
+\item Chaining
+\end{itemize}
+\end{frame}
+
 
 \subsection{CRUD methods}
 
