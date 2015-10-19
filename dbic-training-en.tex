@@ -344,7 +344,7 @@ alter table locations add column latitude float(20);
 
 # run dbicdump again
 
-dbicdump -o dump_directory=./mylib \\
+dbicdump -o dump_directory=./mylib \
     TravelDance::MySchema dbi:SQLite:traveldance.db
 
 # Check for the new column:
