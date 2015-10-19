@@ -1175,18 +1175,7 @@ injections and other nastyness).
 
 \end{frame}
 
-\section{CRUD and Beyond}
-\begin{frame}{CRUD and Beyond}
-\begin{itemize}
-\item CRUD Basics
-\item CRUD Methods
-\item Search conditions and attributes
-\item Chaining
-\end{itemize}
-\end{frame}
-
-
-\subsection{Search Attributes}
+\section{Search Attributes}
 
 \emph{Remember}: these can be applied when using both search and find resultset
 methods.
@@ -1203,7 +1192,7 @@ methods.
 \end{itemize}
 \end{frame}
 
-\subsubsection{join}
+\subsection{join}
 
 Simple join of a single relationship:
 
@@ -1312,7 +1301,7 @@ Value: \$source\_alias
 
 Sometimes you need to be able to override the default source table alias especially for nested search queries (sub-SELECTs) and correlated subqueries. These will be covered in a later section.
 
-\subsubsection{Columns returned}
+\subsection{Columns returned}
 \begin{frame}[fragile]{columns}
 
 Restrict the list of columns to be returned:
@@ -1426,7 +1415,7 @@ my $rs = $schema->resultset('User')->search(
 
 NOTE: must be quoted even when used on the left hand side of a 'fat comma'.
 
-\subsubsection{prefetch}
+\subsection{prefetch}
 
 Value: \verb=$rel_name | \@rel_names | \%rel_names=
 
@@ -1493,7 +1482,7 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{order\_by}
+\subsection{order\_by}
 
 Value: \verb=$order_by | \%order_by | \@order_by=
 
@@ -1527,7 +1516,7 @@ The old scalar reference syntax (i.e. \verb|order_by => \'year DESC'|) is
 still supported, although you are strongly encouraged to use the hashref
 syntax as outlined above.
 
-\subsubsection{group\_by}
+\subsection{group\_by}
 
 Value: \@columns
 
@@ -1552,7 +1541,7 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{page, rows and offset}
+\subsection{page, rows and offset}
 
 \verb|page| makes the resultset paged and specifies the page to
 retrieve. Effectively identical to creating a non-paged resultset and then
@@ -1585,7 +1574,7 @@ my $rs = $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsection{Chaining}
+\section{Chaining}
 % from riba's slides
 
 \begin{frame}{Chaining}
@@ -1601,7 +1590,7 @@ my $rs = $schema->resultset('Location')->search(
 % https://pixabay.com/en/chain-chain-link-border-demarcation-722278/
 % Creative Commons CC0
 
-\subsubsection{Shallow Nesting (Chaining)}
+\subsection{Shallow Nesting (Chaining)}
 
 \begin{frame}[fragile]{Shallow Nesting (Chaining)}
 \begin{lstlisting}
@@ -1612,7 +1601,7 @@ my $rs = $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsubsection{Subquery nesting}
+\subsection{Subquery nesting}
 
 \begin{frame}[fragile]{Subquery nesting}
 \begin{lstlisting}
@@ -1625,7 +1614,7 @@ my $rs = $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\subsection{Correlated Subqueries}
+\section{Correlated Subqueries}
 
 We want a list of all users complete with a count of places\_visited for each. The
 obvious approach is to use a join:
@@ -1657,7 +1646,7 @@ COUNTs might produce unexpected results.
 We cannot add other interesting data from the places\_visited in the same query
 (such as date of most recent visit).
 
-\subsubsection{Correlated subqueries in the traditional way}
+\subsection{Correlated subqueries in the traditional way}
 
 \begin{frame}[fragile]{Correlated Subqueries in the traditional way}
 \begin{lstlisting}
@@ -1680,7 +1669,7 @@ my $rs = resultset('User')->search(undef,
 
 This is much faster and always chainable since no JOIN, GROUP BY, or other junk added to query BUT it is way too much code, so...
 
-\subsubsection{Helper::ResultSet::CorrelateRelationship}
+\subsection{Helper::ResultSet::CorrelateRelationship}
 
 This time we'll also include the date of the latest trip:
 
@@ -1704,7 +1693,7 @@ $user_rset->search( undef,
 \end{frame}
 
 
-\subsection{Where's my cow?}
+\section{Where's my cow?}
 
 \begin{frame}{Where's my cow?}
 % https://pixabay.com/en/cow-animal-milk-cow-meadow-alpine-950227/
@@ -1714,7 +1703,7 @@ $user_rset->search( undef,
 \end{figure}
 \end{frame}
 
-\subsubsection{Where's my cow column?}
+\subsection{Where's my cow column?}
 
 \begin{frame}[fragile]{Where's my cow column?}
 \begin{lstlisting}
