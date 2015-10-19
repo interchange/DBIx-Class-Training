@@ -7,7 +7,7 @@ use lib 'lib';
 use TravelDance::Schema;
 use DBIx::Class::DeploymentHandler;
 
-my $schema = TravelDance::Schemna->connect('traveldance');
+my $schema = TravelDance::Schema->connect('traveldance');
 my $dh     = DBIx::Class::DeploymentHandler->new(
     {
         schema              => $schema,
