@@ -236,6 +236,7 @@ application.
 \begin{itemize}
 \item \verb|DBIx::Class::Candy|
 \item \verb|DBIx::Class::Helpers|
+\item \verb|DBIx::Class::Schema::Config|
 \end{itemize}
 \end{itemize}
 
@@ -460,7 +461,7 @@ for Result and ResultSet classes and loads them into the schema.
 \begin{itemize}
 \item Need one result class for each table
 \item Country => countries
-\item PlaceVisited => placesvisited
+\item PlaceVisited => places_visited
 \item User => users
 \end{itemize}
 \end{frame}
@@ -473,7 +474,7 @@ See \href{https://metacpan.org/pod/DBIx::Class::ResultSource}{DBIx::Class::Resul
 \begin{frame}{Result Class Definition}
 
 \begin{itemize}
-\item Table name
+\item Source (RDBMS-side) name
 \item Columns
 \item Primary key
 \item Relationships
@@ -645,8 +646,6 @@ Here we see sample data for these fields in the
 use TravelDance::Schema;
 my $dsn = 'dbi:SQLite:traveldance.db';
 my %dbi_params = (
-    RaiseError                 => 1,
-    PrintError                 => 1,
     on_connect_call            => 'use_foreign_keys',
     quote_names                => 1,
     sqlite_unicode             => 1,
@@ -663,8 +662,6 @@ Move the DBIC config to \textasciitilde/.dbic.yml:
 \begin{lstlisting}
 traveldance:
   dsn: 'dbi:SQLite:traveldance.db'
-  RaiseError: 1
-  PrintError: 1
   on_connect_call: 'use_foreign_keys'
   quote_names: 1
   sqlite_unicode: 1
@@ -700,14 +697,14 @@ Configuration format and files:
 \begin{itemize}
 \item YAML
 \item JSON
+\item XML
 \item ...
-\item \sout{XML}
 \end{itemize}
 \item File locations
 \begin{description}
-\item[system-wide] \verb|/etc/dbic.*|
-\item[user] \verb|~/.dbic.*|
 \item[project] \verb|./dbic.*|
+\item[user] \verb|~/.dbic.*|
+\item[system-wide] \verb|/etc/dbic.*|
 \end{description}
 \end{itemize}
 \end{frame}
@@ -719,7 +716,6 @@ Configuration format and files:
 \item CRUD Methods
 \item Search conditions and attributes
 \item Chaining
-\item Correlated subqueries
 \end{itemize}
 \end{frame}
 
@@ -762,7 +758,7 @@ same time:
 my $user = $schema->resultset('User')->create(
     {
         username  => 'syspete@example.com',
-        locations => [
+        places_visited => [
             {
                 country_iso_code => 'DE',
             },
@@ -826,7 +822,7 @@ my $rs = $schema->resultset('User')
 
 # resultset with multiple results
 my $rs = $schema->resultset('User')
-    ->search({ nickname => undef });
+    ->search({ nickname => { '!=', 'Racke' } });
 \end{lstlisting}
 \end{frame}
 
@@ -917,7 +913,7 @@ and \href{https://metacpan.org/pod/DBIx::Class::Relationship::Base}
 
 \begin{frame}{Create}
 \begin{itemize}
-\item new / new\_result + insert
+\item new\_result + insert
 \item new\_related + insert
 \item create\_related
 \item populate
@@ -1057,9 +1053,10 @@ $schema->resultset('Location')->search(
 
 \subsubsection{Combining OR and AND}
 
-VisitedPlaces in Germany AND ( city='Hannover' OR city='Berlin' ):
 
 \begin{frame}[fragile]{Combining OR and AND}
+
+VisitedPlaces in Germany AND ( city='Hannover' OR city='Berlin' ):
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1089,28 +1086,6 @@ $schema->resultset('Location')->search(
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Specific comparison operators}
-
-Location is outside the tropics (OR):
-
-\begin{lstlisting}
-$schema->resultset('Location')->search(
-    {latitude => [ 
-        { '>' => 23.43724 }, { '<' => -23.43724 } ],
-    }
-);
-\end{lstlisting}
-
-Location is inside the tropics (AND):
-
-\begin{lstlisting}
-$schema->resultset('Location')->search(
-    {latitude => { 
-        '<=' => 23.43724, '>=' => -23.43724 },
-    }
-);
-\end{lstlisting}
-\end{frame}
 
 \begin{frame}[fragile]{Specific comparison operators}
 
@@ -1135,9 +1110,10 @@ This won't work:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
-    {
-        country_iso_code => { '!=' => 'DE', '!=' => 'MT' },
-    }
+    { country_iso_code => {
+      '!=', 'DE',  # <--- this is still just
+      '!=', 'MT',  # <--- a plain perl hash
+    } }
 );
 \end{lstlisting}
 
@@ -1147,7 +1123,7 @@ unexpected:
 \begin{lstlisting}
 $schema->resultset('Location')->search(
     {
-        country_iso_code => { '!=' => 'MT' },
+        country_iso_code => { '!=', 'MT' },
     }
 );
 \end{lstlisting}
@@ -1158,11 +1134,9 @@ To enable us to construct more complex AND/OR queries we can use the -and and -o
 \begin{frame}[fragile]{-and / -or operators}
 \begin{lstlisting}
 $schema->resultset('Location')->search(
-    {
-        country_iso_code => [
-            -and => { '!=' => 'DE' }, { '!=' => 'MT' }
-        ]
-    }
+    { country_iso_code => { '!=', [qw(
+        -and DE MT
+    )] } }
 );
 \end{lstlisting}
 \end{frame}
@@ -1253,6 +1227,16 @@ $schema->resultset('Location')->search(
     {
         latitude => {
             -not_between => [ 23.43724, -23.43724 ]
+        }
+    }
+);
+
+$schema->resultset('Location')->search(
+    {
+        latitude => {
+          -not => {
+            -between => [ 23.43724, -23.43724 ]
+          }
         }
     }
 );
@@ -1364,27 +1348,10 @@ $schema->resultset('Foo')->search(
 \end{frame}
 
 \subsubsection{Literal SQL}
-\begin{frame}[fragile]{Literal SQL}
-Sometimes only literal SQL will do. 
-Consider this only as a \emph{last resort}.
-
-\begin{lstlisting}
-$schema->resultset('Location')->search(
-{
-  users_id => {
-    -in =>
-      \'SELECT users_id FROM users WHERE users_id > 2'
-  }
-});
-\end{lstlisting}
-\end{frame}
-
-Important: Never use untrusted input as a literal SQL argument - this is a
-massive security risk (there is no way to check literal snippets for SQL
-injections and other nastyness).
 
 \begin{frame}[fragile]{Literal SQL with placeholders and bind values}
-If you really must use literal SQL then passing untrusted data in via placeholders ensures they are correctly quoted for safety:
+Sometimes only literal SQL will do. 
+If you really need to  use it then passing untrusted data in via placeholders ensures they are correctly quoted for safety:
 
 \begin{lstlisting}
 $schema->resultset('Location')->search(
@@ -1397,6 +1364,33 @@ $schema->resultset('Location')->search(
   }
 });
 \end{lstlisting}
+
+Important: Never use untrusted input as a literal SQL fragment - this is a
+massive security risk (there is no way to check literal snippets for SQL
+injections and other nastyness).
+
+\end{frame}
+
+\begin{frame}[fragile]{Literal SQL with placeholders and bind values}
+Sometimes only literal SQL will do. 
+If you really need to  use it then passing untrusted data in via placeholders ensures they are correctly quoted for safety:
+
+\begin{lstlisting}
+$schema->resultset('Location')->search(
+{
+  users_id => {
+    -in => \[
+       'SELECT users_id FROM users WHERE users_id > ?',
+       [ \'integer' => 2 ],
+    ]
+  }
+});
+\end{lstlisting}
+
+Important: Never use untrusted input as a literal SQL fragment - this is a
+massive security risk (there is no way to check literal snippets for SQL
+injections and other nastyness).
+
 \end{frame}
 
 \subsection{Search Attributes}
@@ -1435,7 +1429,7 @@ Simple join of a single relationship:
 my $rs = $schema->resultset('User')->search(
     undef,
     {
-        join => 'locations',
+        join => 'places_visited',
     }
 );
 \end{lstlisting}
@@ -1476,26 +1470,9 @@ Multi-level join:
 my $rs = $schema->resultset('User')->search(
     undef,
     {
-        join => { locations => 'country' }
+        join => { places_visited => 'country' }
     }
 );
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Join}
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.4\linewidth]{img/join-complex.png}
-\end{figure}
-\end{frame}
-
-\begin{frame}[fragile]{Join}
-Several relationships combined with multi-level:
-
-\begin{lstlisting}
-    join => [
-        'locations', { country => [ 'here', 'there' ] }
-    ]
 \end{lstlisting}
 \end{frame}
 
@@ -1512,10 +1489,10 @@ default alias 'me'.
 my $rs = $schema->resultset('Country')->search(
     {
         'me.country_iso_code' => 'MT',
-        'locations.city'      => 'Qormi',
+        'places_visited.city' => 'Qormi',
     },
     {
-        join => 'locations',
+        join => 'places_visited',
     }
 );
 \end{lstlisting}
@@ -1565,19 +1542,6 @@ my $rs = $schema->resultset('User')->search(
 
 \begin{frame}[fragile]{columns}
 
-An equivalent result can be obtained using the select attribute:
-\begin{lstlisting}
-my $rs = $schema->resultset('User')->search(
-    undef,
-    {
-        select => [qw/ username first_name last_name /],
-    }
-);
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{columns}
-
 Hash reference:
 
 \begin{lstlisting}
@@ -1602,22 +1566,6 @@ $user->get_column('firstname');
 
 Extra accessors can also be added - to be covered later.
 
-An equivalent result can be obtained using the select and as attributes:
-
-\begin{frame}[fragile]{columns}
-\begin{lstlisting}
-my $rs = $schema->resultset('User')->search(
-    undef,
-    {
-        select => [ 'first_name', 'last_name' ],
-        as     => [ 'firstname', 'lastname' ],
-    }
-);
-\end{lstlisting}
-\end{frame}
-
-NOTE: columns is generally preferred to select and as since it is much
-easier to read the intent from the code.
 
 \begin{frame}[fragile]{columns}
 Simple scalar:
@@ -1626,7 +1574,7 @@ Simple scalar:
 my $rs = $schema->resultset('User')->search(
     undef,
     {
-        columns => 'first_name'
+      columns => 'first_name'
     }
 );
 \end{lstlisting}
@@ -1640,7 +1588,10 @@ Array reference with hash references:
 my $rs = $schema->resultset('User')->search(
     undef,
     {
-        columns => [ 'username', { name => 'first_name' } ],
+      columns => [
+        'username',
+        { name => 'first_name' }
+      ],
     }
 );
 \end{lstlisting}
@@ -1654,11 +1605,10 @@ columns: Using database functions or stored procedures
 my $rs = $schema->resultset('User')->search(
     {},
     {
-        columns => [
-            'username',
-            { username_length => 
-                { length => 'username' } }
-        ],
+      columns => [
+        'username',
+        { username_length => { length => 'username' } }
+      ],
     }
 );
 \end{lstlisting}
@@ -1674,91 +1624,14 @@ Works the same as columns but adds columns to the current selection.
 my $rs = $schema->resultset('User')->search(
     undef,
     {
-        join => 'locations',
-        '+columns' => [ 'locations.country_iso_code' ]
+        join => 'places_visited',
+        '+columns' => [ 'places_visited.country_iso_code' ]
     }
 );
 \end{lstlisting}
 \end{frame}
 
 NOTE: must be quoted even when used on the left hand side of a 'fat comma'.
-
-In addition to +columns there are also +select and +as attributes which
-operate much like select and as except they are for adding columns. It is
-generally preferred to use +columns. The following are equivalent:
-
-\begin{frame}[fragile]{Equivalent of +columns with +select and +as}
-\begin{lstlisting}
-my $rs = $schema->resultset('User')->search(undef,
-    {
-        join => 'locations',
-        '+columns' => [ { code => 'locations.country_iso_code' } ]
-    }
-);
-
-my $rs = $schema->resultset('User')->search(undef,
-    {
-        join => 'locations',
-        '+select' => [ 'locations.country_iso_code' ],
-        '+as'     => [ 'code' ],
-    }
-);
-\end{lstlisting}
-\end{frame}
-
-\subsubsection{collapse}
-
-Value: [ 0 | 1 ] - defaults to 0
-
-When set to a true value, indicates that any rows fetched from joined
-has\_many relationships are to be aggregated into the corresponding "parent"
-object. For example:
-
-\begin{frame}[fragile]{collapse}
-\begin{lstlisting}
-my $rs = $schema->resultset('User')->search(
-    undef,
-    {
-        join       => 'locations',
-        '+columns' => [ 'locations.country_iso_code' ],
-    }
-);
-\end{lstlisting}
-\end{frame}
-
-This will return as many row objects as there locations since User has\_many
-locations.
-
-Compare with:
-
-\begin{frame}[fragile]{collapse}
-\begin{lstlisting}
-my $rs = $schema->resultset('User')->search(
-    undef,
-    {
-        join       => 'locations',
-        '+columns' => [ 'locations.country_iso_code' ],
-        collapse   => 1,
-    }
-);
-\end{lstlisting}
-\end{frame}
-
-This will return only as many row objects as there are Users. The many locations related to each user are available via the locations accessor thus:
-
-\begin{frame}[fragile]{collapse}
-\begin{lstlisting}
-while ( my $user = $rs->next ) {
-    print "user " , $user->username ,
-        " has the following country codes:\n";
-
-    my $locations_rs = $user->locations;
-    while ( my $location = $locations_rs->next ) {
-        print "\t" , $location->country_iso_code , "\n";
-    }
-}
-\end{lstlisting}
-\end{frame}
 
 \subsubsection{prefetch}
 
@@ -1772,8 +1645,8 @@ appropriately.
 
 In the following query we join country in order to search by country name
 but we do not include any columns from the country table in the
-result. Using prefetch on locations means that all columns from the Location
-class will be available via the locations accessor accessor for each user
+result. Using prefetch on places_visited means that all columns from the Location
+class will be available via the places_visited accessor accessor for each user
 object returned.
 
 \begin{frame}[fragile]{prefetch}
@@ -1783,12 +1656,28 @@ my $rs = $schema->resultset('User')->search(
         'country.name' => 'Malta',
     },
     {
-        join => { locations => 'country' },
-        prefetch => 'locations',
+        join => { places_visited => 'country' },
+        prefetch => 'places_visited',
     }
 );
 \end{lstlisting}
 \end{frame}
+
+\begin{frame}[fragile]{collapse}
+\begin{lstlisting}
+while ( my $user = $rs->next ) {
+    print "user " , $user->username ,
+        " has the following country codes:\n";
+
+    my $places_visited_rs = $user->places_visited;
+    while ( my $place = $places_visited_rs->next ) {
+        print "\t" , $place->country_iso_code , "\n";
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+
 
 This is equivalent to:
 
@@ -1799,11 +1688,11 @@ my $rs = $schema->resultset('User')->search(
     'country.name' => 'Malta',
 },
 {
-    join => { locations => 'country' },
+    join => { places_visited => 'country' },
     '+columns' => [
-        ( map { +{ "locations.$_" => "locations.$_" } }
+        ( map { +{ "places_visited.$_" => "places_visited.$_" } }
               $schema->source('User')
-                ->related_source('locations')->columns )
+                ->related_source('places_visited')->columns )
     ],
     collapse => 1,
 }
@@ -1863,7 +1752,7 @@ my $rs = $schema->resultset('User')->search(
                 count => 'country.country_iso_code' }
             },
         ],
-        join => { locations => 'country' },
+        join => { places_visited => 'country' },
         group_by => [ 'me.username', 'country.name' ],
     },
 );
@@ -1890,7 +1779,7 @@ returned. If the resultset is paged then the offset is relative to the
 current page.
 
 \begin{frame}[fragile]{page, rows and offset}
-Page 2 starts with the 6th row so this gives us rows 16 to 20:
+Page 2 starts with the 6th row so this gives us rows 6 to 10:
 
 \begin{lstlisting}
 my $rs = $schema->resultset('Location')->search(
@@ -1898,7 +1787,6 @@ my $rs = $schema->resultset('Location')->search(
     {
         page   => 2,
         rows   => 5,
-        offset => 10,
     }
 );
 \end{lstlisting}
@@ -1946,7 +1834,7 @@ my $rs = $schema->resultset('Location')->search(
 
 \subsection{Correlated Subqueries}
 
-We want a list of all users complete with a count of locations for each. The
+We want a list of all users complete with a count of places_visited for each. The
 obvious approach is to use a join:
 
 \begin{frame}[fragile]{Correlated Subqueries}
@@ -1954,10 +1842,10 @@ obvious approach is to use a join:
 my $rs = $schema->resultset('User')->search(
     undef,
     {
-        join       => 'locations',
+        join       => 'places_visited',
         '+columns' => {
             location_count => {
-                count => 'locations.id'
+                count => 'places_visited.id'
             }
         },
         # let DBIC work out group_by for us
@@ -1973,7 +1861,7 @@ Depending on database engine, COUNT’s that aren’t COUNT(*) tend to be slow
 as they do table scans. 
 This is hard to chain since we've introduced JOIN and GROUP BY and collapsed
 COUNTs might produce unexpected results. 
-We cannot add other interesting data from the locations in the same query
+We cannot add other interesting data from the places_visited in the same query
 (such as date of most recent visit).
 
 \subsubsection{Correlated subqueries in the traditional way}
@@ -1986,10 +1874,10 @@ my $rs = resultset('User')->search(undef,
         '+columns' => {
             location_count => $location_rset->search(
                 {
-                    "locations_alias.users_id" =>
+                    "places_visited_alias.users_id" =>
                       { -ident => "me.users_id" },
                 },
-                { alias => 'locations_alias' },
+                { alias => 'places_visited_alias' },
             )->count_rs->as_query
         },
     }
@@ -2010,10 +1898,10 @@ $user_rset->search( undef,
     {
       '+columns' => {
           location_count =>
-              $user_rset->correlate('locations')
+              $user_rset->correlate('places_visited')
                         ->count_rs->as_query,
           latest_trip =>
-              $user_rset->correlate('locations')
+              $user_rset->correlate('places_visited')
                         ->get_column('visited')
                         ->max_rs->as_query,
       },
@@ -2045,7 +1933,7 @@ sub with_location_count {
     {
       '+columns' => {
         location_count =>
-          $self->correlate('locations')
+          $self->correlate('places_visited')
             ->count_rs->as_query
       },
     });
@@ -2114,7 +2002,7 @@ sub location_count {
         return $self->get_column('location_count');
     }
     else {
-        return $self->locations->count;
+        return $self->places_visited->count;
     }
 }
 \end{lstlisting}
@@ -2146,10 +2034,10 @@ with\_location\_count method on the resultset. From a performance viewpoint
 your User resultsets if using search. 
 
 CAVEAT: if you do something like 
-\verb|$user->create_related('locations', [{...}])|
+\verb|$user->create_related('places_visited', [{...}])|
 on a User object from a resultset that has had with\_location\_count
 previously called on it then when you subsequently call location\_count on
-the User object the count will not include the extra locations you just
+the User object the count will not include the extra places_visited you just
 added. A new search will be needed to correct the count in this case.
 
 \section{Relationships}
@@ -2175,7 +2063,7 @@ One side of the relationship is always a \verb|belongs_to| relationship
 where the calling class stores the stores the foreign class’s primary key in
 one (or more) of the calling class columns.
 
-In our example schema every user can have zero, one or many locations and
+In our example schema every user can have zero, one or many places_visited and
 each Location \verb|belongs_to| a single User so we have the following column and
 relationship defined in the Location class: 
  
@@ -2206,11 +2094,11 @@ primary_column users_id => {
 \end{lstlisting}
 \end{frame}
 
-And since we expect each user to have many locations we define the relationship as a \verb|has_many|:
+And since we expect each user to have many places_visited we define the relationship as a \verb|has_many|:
 
 \begin{frame}[fragile]{VisitedPlaces Relationship}
 \begin{lstlisting}
-has_many locations =>
+has_many places_visited =>
   "TravelDance::Schema::Result::Location",
   { 'foreign.users_id' => 'self.users_id' };
 \end{lstlisting}
@@ -2261,7 +2149,7 @@ in User:
 \begin{frame}[fragile]{Simple equality conditions}
 \begin{lstlisting}
 has_many
-  locations => "TravelDance::Schema::Result::Location",
+  places_visited => "TravelDance::Schema::Result::Location",
   { 'foreign.users_id' => 'self.users_id' };
 \end{lstlisting}
 \end{frame}
@@ -2271,7 +2159,7 @@ If the column has the same name in both tables then the condition can be replace
 \begin{frame}[fragile]{Simple equality conditions}
 \begin{lstlisting}
 has_many
-  locations => "TravelDance::Schema::Result::Location",
+  places_visited => "TravelDance::Schema::Result::Location",
   'users_id';
 \end{lstlisting}
 \end{frame}
@@ -2295,7 +2183,7 @@ has_many
 
 \subsubsection{Custom join conditions}
 
-All locations visited before 1st January 2000.
+All places_visited visited before 1st January 2000.
 
 \begin{frame}[fragile]{Custom join conditions}
 \begin{lstlisting}
@@ -2375,11 +2263,11 @@ right-hand table. Compare these two SQL queries and their result:
 
 \begin{frame}[fragile]{SQL queries}
 \begin{lstlisting}
-SELECT count(*) FROM locations l JOIN countries c
+SELECT count(*) FROM places_visited l JOIN countries c
     ON l.country_iso_code=c.country_iso_code;
 27
 
-SELECT count(*) FROM locations l LEFT JOIN countries c
+SELECT count(*) FROM places_visited l LEFT JOIN countries c
     ON l.country_iso_code=c.country_iso_code;
 28
 \end{lstlisting}
@@ -2608,7 +2496,7 @@ This causes a number of problems:
 they do table scans.
 \item This is hard to chain since we've introduced JOIN and GROUP BY and
 collapsed COUNTs might produced unexpected results.
-\item We cannot add other interesting data from the locations in the same query (such as date of most recent visit).
+\item We cannot add other interesting data from the places_visited in the same query (such as date of most recent visit).
 \end{itemize}
 
 \begin{frame}[fragile]{CorrelateRelationship}
@@ -2978,14 +2866,14 @@ $rs->search( undef,
 \verb|prefetch| shortcut:
 
 \begin{lstlisting}
-$rs->prefetch( { locations => 'country' } );
+$rs->prefetch( { places_visited => 'country' } );
 \end{lstlisting}
 
 equivalent to:
 
 \begin{lstlisting}
 $rs->search( undef, { 
-    prefetch => { locations => 'country' } 
+    prefetch => { places_visited => 'country' } 
 } );
 \end{lstlisting}
 
