@@ -11,6 +11,23 @@
   \titlepage
 \end{frame}
 
+\begin{frame}<presentation>[fragile]{Setup for Training}
+\begin{lstlisting}
+# clone training repository
+git clone \
+  https://github.com/interchange/DBIx-Class-Training.git
+
+# enter repository
+cd DBIx-Class-Training
+
+# enter application directory
+cd TravelDance
+
+# install dependencies (skipping tests)
+cpanm -n --installdeps .
+\end{lstlisting}
+\end{frame}
+
 \cleardoublepage
 
 \tableofcontents
