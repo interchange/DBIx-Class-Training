@@ -4,7 +4,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 % neutralize beamer
-\renewenvironment*{frame}[2][]{\relax}{\relax}
+% \renewenvironment*{frame}[2][]{\relax}{\relax}
+\usepackage{beamerarticle}
+\mode<article>{\setbeamertemplate{frametitle}{\relax}}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage[english]{babel}
