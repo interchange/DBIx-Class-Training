@@ -1119,6 +1119,251 @@ injections and other nastyness).
 
 \end{frame}
 
+
+\section{Relationships}
+
+\begin{frame}{Relationships}
+\begin{itemize}
+\item has\_many, might\_have and has\_one
+\item many\_to\_many
+\item Relationship conditions
+\item Relationship attributes
+\item Relationships with nullable FKs
+\end{itemize}
+\end{frame}
+
+\subsection{has\_many, might\_have and has\_one}
+
+In DBIx::Class a relationship defines the connection between exactly two
+tables. The relationship condition lists the columns in each table that
+contain the same values. It is used to output an SQL JOIN condition between
+the tables.
+
+One side of the relationship is always a \verb|belongs_to| relationship
+where the calling class stores the stores the foreign class’s primary key in
+one (or more) of the calling class columns.
+
+In our example schema every user can have zero, one or many places\_visited and
+each Location \verb|belongs_to| a single User so we have the following column and
+relationship defined in the Location class: 
+ 
+\begin{frame}[fragile]{belongs\_to}
+\begin{lstlisting}
+column users_id => {
+    data_type      => "integer",
+};
+
+belongs_to
+  user => "TravelDance::Schema::Result::User",
+  { 'foreign.users_id' => 'self.users_id' };
+\end{lstlisting}
+\end{frame}
+
+Here ‘user’ is the name of the relationship and also the name of the relationship accessor that is created. The second argument is the foreign class and the final argument is the relationship condition. Here we have a simple equality condition.
+
+Note the use of ‘is\_foreign\_key’ in the users\_id column definition. This is used when the schema is deployed and instructs SQL::Translator to create the appropriate foreign key constraints in the database.
+
+In the User class we define the primary key which is referenced by the Location class::
+
+\begin{frame}[fragile]{Primary key}
+\begin{lstlisting}
+primary_column users_id => {
+    data_type         => "integer",
+    is_auto_increment => 1,
+};
+\end{lstlisting}
+\end{frame}
+
+And since we expect each user to have many places\_visited we define the relationship as a \verb|has_many|:
+
+\begin{frame}[fragile]{VisitedPlaces Relationship}
+\begin{lstlisting}
+has_many places_visited =>
+  "TravelDance::Schema::Result::Location",
+  { 'foreign.users_id' => 'self.users_id' };
+\end{lstlisting}
+\end{frame}
+
+Note: has\_many does not mean that there must be many related items but only that there can be many. One or zero related items is also possible (a LEFT JOIN).
+
+
+\begin{frame}{has\_many / might\_have}
+\begin{table}
+\begin{tabular}{c | c | c}
+relationship type & default join type & number of related rows \\
+\hline
+has\_many & LEFT & zero, one or many \\
+might\_have & LEFT & zero or one \\
+\end{tabular}
+\end{table}
+\end{frame}
+
+The difference here is that with a collapsed search (to be covered later)
+the has\_many accessor returns a resultset whereas the might\_have accessor
+returns a result object (a single row).
+
+\subsection{many\_to\_many}
+
+This is not a relationship but a convenience method generator which defines an
+accessor to retrieve row contents across multiple relationships.
+
+The difference between a bridge and a relationship is, that the bridge
+cannot be used to join tables in a search, instead its component
+relationships must be used.
+
+\subsection{Relationship conditions}
+
+\begin{frame}{Relationship conditions}
+\begin{itemize}
+\item Simple equality
+\item Multiple groups of simple equality conditions
+\item Custom join conditions
+\end{itemize}
+\end{frame}
+
+\subsubsection{Simple equality}
+
+Simple equality conditions
+in User:
+
+\begin{frame}[fragile]{Simple equality conditions}
+\begin{lstlisting}
+has_many
+  places_visited => "TravelDance::Schema::Result::Location",
+  { 'foreign.users_id' => 'self.users_id' };
+\end{lstlisting}
+\end{frame}
+
+If the column has the same name in both tables then the condition can be replaced with the column name:
+
+\begin{frame}[fragile]{Simple equality conditions}
+\begin{lstlisting}
+has_many
+  places_visited => "TravelDance::Schema::Result::Location",
+  'users_id';
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Multiple groups of simple equality conditions}
+
+As is the default in SQL::Abstract, the key-value pairs will be ANDed in the
+resulting JOIN clause. An OR can be achieved with an arrayref. For example a
+condition like:
+
+\begin{frame}[fragile]{Multiple groups of simple equality conditions}
+\begin{lstlisting}
+has_many
+  related_item_links => "My::Schema::Item::Links",
+  [
+    { 'foreign.left_itemid'  => 'self.id' },
+    { 'foreign.right_itemid' => 'self.id' },
+  ];
+\end{lstlisting}
+\end{frame}
+
+\subsubsection{Custom join conditions}
+
+All places\_visited visited before 1st January 2000.
+
+\begin{frame}[fragile]{Custom join conditions}
+\begin{lstlisting}
+has_many
+ before_2000 => "TravelDance::Schema::Result::Location",
+ sub {
+   my $args = shift;
+   return {
+      "$args->{foreign_alias}.users_id" =>
+          { -ident => "$args->{self_alias}.users_id" },
+      "$args->{foreign_alias}.visited" =>
+          { '<', '2000-01-01' },
+   };
+ };
+\end{lstlisting}
+\end{frame}
+
+\subsection{Relationship attributes}
+
+% NOTE: we should mention these but not go into any detail except for join_type.
+
+\begin{frame}{Relationship attributes}
+\begin{itemize}
+\item join\_type
+% \item proxy => \verb|$column| | \verb|\@columns| | \verb|\%column|
+\item accessor
+\item is\_foreign\_key\_constraint
+\item cascade\_copy / cascade\_delete / cascade\_update
+\item on\_delete / on\_update
+\item is\_deferrable
+\item add\_fk\_index
+\end{itemize}
+\end{frame}
+
+\subsection{Relationships with nullable FKs}
+
+% Source for description: https://en.wikipedia.org/wiki/Marie_Byrd_Land
+% License for Picture: CC BY 2.0 via Commons 
+
+\subsubsection{Unclaimed Land}
+
+Because of its remoteness, even by Antarctic standards, most of Marie Byrd
+Land (the portion east of 150\degree{}W) has not been claimed by any sovereign
+nation. It is by far the largest single unclaimed territory on Earth, with
+an area of 1,610,000 km2 (620,000 sq mi) (including Eights Coast,
+immediately east of Marie Byrd Land).
+
+\begin{frame}{Unclaimed Land}
+  \begin{figure}[!ht]
+    \begin{center}
+\includegraphics{img/Marie_Byrd_Land.jpg}
+\caption[Marie Byrd Land]{Photo by Michael Studinger / NASA
+  Goddard Space Flight Center}
+    \end{center}
+\end{figure}
+\end{frame}
+
+\subsubsection{Location without a country}
+
+A location usually has a country but not if it is in a neutral zone like in
+the middle of an ocean so this column is nullable:
+
+\begin{frame}[fragile]{Location without a country}
+\begin{lstlisting}
+column country_iso_code => {
+    data_type      => "char",
+    size           => 2,
+    is_nullable    => 1,
+};
+\end{lstlisting}
+\end{frame}
+
+Location has a belongs\_to relationship with Country and the default join
+type for this relationship is an INNER JOIN (the default JOIN type) which
+skips rows from the left-hand table if there is no corresponding row in the
+right-hand table. Compare these two SQL queries and their result: 
+
+\begin{frame}[fragile]{SQL queries}
+\begin{lstlisting}
+SELECT count(*) FROM places_visited l JOIN countries c
+    ON l.country_iso_code=c.country_iso_code;
+27
+
+SELECT count(*) FROM places_visited l LEFT JOIN countries c
+    ON l.country_iso_code=c.country_iso_code;
+28
+\end{lstlisting}
+\end{frame}
+
+So we use the join\_type relationship attribute in the relationship definition to force a LEFT JOIN:
+
+\begin{frame}[fragile]{LEFT JOIN join\_type}
+\begin{lstlisting}
+belongs_to
+  country => "TravelDance::Schema::Result::Country",
+  "country_iso_code",
+  { join_type => 'left' };
+\end{lstlisting}
+\end{frame}
+
 \section{Search Attributes}
 
 \emph{Remember}: these can be applied when using both search and find resultset
@@ -1765,250 +2010,6 @@ on a User object from a resultset that has had with\_location\_count
 previously called on it then when you subsequently call location\_count on
 the User object the count will not include the extra places\_visited you just
 added. A new search will be needed to correct the count in this case.
-
-\section{Relationships}
-
-\begin{frame}{Relationships}
-\begin{itemize}
-\item has\_many, might\_have and has\_one
-\item many\_to\_many
-\item Relationship conditions
-\item Relationship attributes
-\item Relationships with nullable FKs
-\end{itemize}
-\end{frame}
-
-\subsection{has\_many, might\_have and has\_one}
-
-In DBIx::Class a relationship defines the connection between exactly two
-tables. The relationship condition lists the columns in each table that
-contain the same values. It is used to output an SQL JOIN condition between
-the tables.
-
-One side of the relationship is always a \verb|belongs_to| relationship
-where the calling class stores the stores the foreign class’s primary key in
-one (or more) of the calling class columns.
-
-In our example schema every user can have zero, one or many places\_visited and
-each Location \verb|belongs_to| a single User so we have the following column and
-relationship defined in the Location class: 
- 
-\begin{frame}[fragile]{belongs\_to}
-\begin{lstlisting}
-column users_id => {
-    data_type      => "integer",
-};
-
-belongs_to
-  user => "TravelDance::Schema::Result::User",
-  { 'foreign.users_id' => 'self.users_id' };
-\end{lstlisting}
-\end{frame}
-
-Here ‘user’ is the name of the relationship and also the name of the relationship accessor that is created. The second argument is the foreign class and the final argument is the relationship condition. Here we have a simple equality condition.
-
-Note the use of ‘is\_foreign\_key’ in the users\_id column definition. This is used when the schema is deployed and instructs SQL::Translator to create the appropriate foreign key constraints in the database.
-
-In the User class we define the primary key which is referenced by the Location class::
-
-\begin{frame}[fragile]{Primary key}
-\begin{lstlisting}
-primary_column users_id => {
-    data_type         => "integer",
-    is_auto_increment => 1,
-};
-\end{lstlisting}
-\end{frame}
-
-And since we expect each user to have many places\_visited we define the relationship as a \verb|has_many|:
-
-\begin{frame}[fragile]{VisitedPlaces Relationship}
-\begin{lstlisting}
-has_many places_visited =>
-  "TravelDance::Schema::Result::Location",
-  { 'foreign.users_id' => 'self.users_id' };
-\end{lstlisting}
-\end{frame}
-
-Note: has\_many does not mean that there must be many related items but only that there can be many. One or zero related items is also possible (a LEFT JOIN).
-
-
-\begin{frame}{has\_many / might\_have}
-\begin{table}
-\begin{tabular}{c | c | c}
-relationship type & default join type & number of related rows \\
-\hline
-has\_many & LEFT & zero, one or many \\
-might\_have & LEFT & zero or one \\
-\end{tabular}
-\end{table}
-\end{frame}
-
-The difference here is that with a collapsed search (to be covered later)
-the has\_many accessor returns a resultset whereas the might\_have accessor
-returns a result object (a single row).
-
-\subsection{many\_to\_many}
-
-This is not a relationship but a convenience method generator which defines an
-accessor to retrieve row contents across multiple relationships.
-
-The difference between a bridge and a relationship is, that the bridge
-cannot be used to join tables in a search, instead its component
-relationships must be used.
-
-\subsection{Relationship conditions}
-
-\begin{frame}{Relationship conditions}
-\begin{itemize}
-\item Simple equality
-\item Multiple groups of simple equality conditions
-\item Custom join conditions
-\end{itemize}
-\end{frame}
-
-\subsubsection{Simple equality}
-
-Simple equality conditions
-in User:
-
-\begin{frame}[fragile]{Simple equality conditions}
-\begin{lstlisting}
-has_many
-  places_visited => "TravelDance::Schema::Result::Location",
-  { 'foreign.users_id' => 'self.users_id' };
-\end{lstlisting}
-\end{frame}
-
-If the column has the same name in both tables then the condition can be replaced with the column name:
-
-\begin{frame}[fragile]{Simple equality conditions}
-\begin{lstlisting}
-has_many
-  places_visited => "TravelDance::Schema::Result::Location",
-  'users_id';
-\end{lstlisting}
-\end{frame}
-
-\subsubsection{Multiple groups of simple equality conditions}
-
-As is the default in SQL::Abstract, the key-value pairs will be ANDed in the
-resulting JOIN clause. An OR can be achieved with an arrayref. For example a
-condition like:
-
-\begin{frame}[fragile]{Multiple groups of simple equality conditions}
-\begin{lstlisting}
-has_many
-  related_item_links => "My::Schema::Item::Links",
-  [
-    { 'foreign.left_itemid'  => 'self.id' },
-    { 'foreign.right_itemid' => 'self.id' },
-  ];
-\end{lstlisting}
-\end{frame}
-
-\subsubsection{Custom join conditions}
-
-All places\_visited visited before 1st January 2000.
-
-\begin{frame}[fragile]{Custom join conditions}
-\begin{lstlisting}
-has_many
- before_2000 => "TravelDance::Schema::Result::Location",
- sub {
-   my $args = shift;
-   return {
-      "$args->{foreign_alias}.users_id" =>
-          { -ident => "$args->{self_alias}.users_id" },
-      "$args->{foreign_alias}.visited" =>
-          { '<', '2000-01-01' },
-   };
- };
-\end{lstlisting}
-\end{frame}
-
-\subsection{Relationship attributes}
-
-% NOTE: we should mention these but not go into any detail except for join_type.
-
-\begin{frame}{Relationship attributes}
-\begin{itemize}
-\item join\_type
-% \item proxy => \verb|$column| | \verb|\@columns| | \verb|\%column|
-\item accessor
-\item is\_foreign\_key\_constraint
-\item cascade\_copy / cascade\_delete / cascade\_update
-\item on\_delete / on\_update
-\item is\_deferrable
-\item add\_fk\_index
-\end{itemize}
-\end{frame}
-
-\subsection{Relationships with nullable FKs}
-
-% Source for description: https://en.wikipedia.org/wiki/Marie_Byrd_Land
-% License for Picture: CC BY 2.0 via Commons 
-
-\subsubsection{Unclaimed Land}
-
-Because of its remoteness, even by Antarctic standards, most of Marie Byrd
-Land (the portion east of 150\degree{}W) has not been claimed by any sovereign
-nation. It is by far the largest single unclaimed territory on Earth, with
-an area of 1,610,000 km2 (620,000 sq mi) (including Eights Coast,
-immediately east of Marie Byrd Land).
-
-\begin{frame}{Unclaimed Land}
-  \begin{figure}[!ht]
-    \begin{center}
-\includegraphics{img/Marie_Byrd_Land.jpg}
-\caption[Marie Byrd Land]{Photo by Michael Studinger / NASA
-  Goddard Space Flight Center}
-    \end{center}
-\end{figure}
-\end{frame}
-
-\subsubsection{Location without a country}
-
-A location usually has a country but not if it is in a neutral zone like in
-the middle of an ocean so this column is nullable:
-
-\begin{frame}[fragile]{Location without a country}
-\begin{lstlisting}
-column country_iso_code => {
-    data_type      => "char",
-    size           => 2,
-    is_nullable    => 1,
-};
-\end{lstlisting}
-\end{frame}
-
-Location has a belongs\_to relationship with Country and the default join
-type for this relationship is an INNER JOIN (the default JOIN type) which
-skips rows from the left-hand table if there is no corresponding row in the
-right-hand table. Compare these two SQL queries and their result: 
-
-\begin{frame}[fragile]{SQL queries}
-\begin{lstlisting}
-SELECT count(*) FROM places_visited l JOIN countries c
-    ON l.country_iso_code=c.country_iso_code;
-27
-
-SELECT count(*) FROM places_visited l LEFT JOIN countries c
-    ON l.country_iso_code=c.country_iso_code;
-28
-\end{lstlisting}
-\end{frame}
-
-So we use the join\_type relationship attribute in the relationship definition to force a LEFT JOIN:
-
-\begin{frame}[fragile]{LEFT JOIN join\_type}
-\begin{lstlisting}
-belongs_to
-  country => "TravelDance::Schema::Result::Country",
-  "country_iso_code",
-  { join_type => 'left' };
-\end{lstlisting}
-\end{frame}
 
 \section{Components}
 DBIx::Class uses \href{https://metacpan.org/pod/Class::C3::Componentised}
