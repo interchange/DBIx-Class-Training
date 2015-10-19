@@ -480,12 +480,17 @@ See \href{https://metacpan.org/pod/DBIx::Class::ResultSource}{DBIx::Class::Resul
 \end{itemize}
 \end{frame}
 
-\subsubsection{Country Result Class}
+\subsubsection{Vanilla DBIC Result Class}
 
-\begin{frame}[fragile]{Country / Vanilla DBIx::Class}
+\begin{frame}[fragile]{Vanilla DBIC Result Class for Country I}
 \begin{lstlisting}
 package TravelDance::Schema::Result::Country;
-use base qw/DBIx::Class::Core/;
+use warnings;
+use strict;
+use base 'DBIx::Class::Core';
+
+__PACKAGE__->table('countries');
+
 __PACKAGE__->add_columns(
     country_iso_code => {
         data_type => "char",
@@ -497,9 +502,10 @@ __PACKAGE__->add_columns(
     },
 );
 \end{lstlisting}
+\textit{... to be continued.}
 \end{frame}
 
-\begin{frame}[fragile]{Country / Vanilla DBIx::Class}
+\begin{frame}[fragile]{Vanilla DBIC Result Class for Country II}
 \begin{lstlisting}
 __PACKAGE__->set_primary_key("country_iso_code");
 
@@ -512,10 +518,14 @@ __PACKAGE__->has_many(
 __PACKAGE__->many_to_many(
     users => "locations", "user"
 );
+
+1;
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Country / DBIx::Class::Candy}
+\subsubsection{Candy DBIC Result Class}
+
+\begin{frame}[fragile]{Candy DBIC Result Class for Country I}
 \begin{lstlisting}
 package TravelDance::Schema::Result::Country;
 use TravelDance::Schema::Candy;
@@ -532,103 +542,17 @@ column name => {
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Country / DBIx::Class::Candy}
+\begin{frame}[fragile]{Candy DBIC Result Class for Country II}
 \begin{lstlisting}
-has_many
-  locations =>
+has_many locations =>
   "TravelDance::Schema::Result::Location",
   'country_iso_code';
 
 many_to_many users => "locations", "user";
+
+1;
 \end{lstlisting}
 \end{frame}
-
-\subsubsection{Location Result Class}
-
-\begin{frame}[fragile]{User / Vanilla DBIx::Class}
-\begin{lstlisting}
-
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-package TravelDance::Schema::Result::Location;
-use TravelDance::Schema::Candy;
-
-primary_column locations_id => {
-    data_type         => "integer",
-    is_auto_increment => 1,
-};
-column address => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-column address_2 => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-
-column postal_code => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-column city => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-
-column region => {
-    data_type     => "varchar",
-    default_value => "",
-    size          => 255,
-};
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-column country_iso_code => {
-    data_type      => "char",
-    size           => 2,
-    is_nullable    => 1,
-};
-
-column visited => {
-    data_type     => "datetime",
-};
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{User / DBIx::Class::Candy}
-\begin{lstlisting}
-column users_id => {
-    data_type      => "integer",
-};
-
-belongs_to
-  country => "TravelDance::Schema::Result::Country",
-  "country_iso_code", { join_type => 'left' };
-
-belongs_to user => "TravelDance::Schema::Result::User",
-  "users_id";
-\end{lstlisting}
-\end{frame}
-
 \subsubsection{User Result Class}
 
 The user result class has the primary key \verb|users_id| and the
