@@ -275,64 +275,6 @@ dbicdump -o dump_directory=/home/dance/TravelDance/lib
 \end{lstlisting}
 \end{frame}
 
-\verb|dbicdump| also provides additional options, e.g.
-including \verb|DBIx::Class| components, which we cover
-later in the training.
-
-\begin{frame}[fragile]{dbicdump with Components}
-\begin{lstlisting}
-dbicdump -o dump_directory=/home/dance/TravelDance/lib 
-         -o components='["InflateColumn::DateTime"]'
-         TravelDance::Schema 
-         dbi:Pg:dbname=perldance
-\end{lstlisting}
-\end{frame}
-
-\subsubsection{Creating database}
-Starting a new project involves creating a database, which
-isn't as simple as you would think.
-
-MySQL databases should be created with proper UTF8 encoding and appropriate 
-collation for your local, for example:
-
-\begin{frame}[fragile]{Creating MySQL database}
-\begin{lstlisting}
-    CREATE DATABASE "my_shop_db"
-        DEFAULT CHARACTER SET utf8mb4
-        DEFAULT COLLATE utf8mb4_unicode_ci;
-\end{lstlisting}
-\end{frame}
-
-The following L<Connection attributes|DBIx::Class::Storage::DBI/DBIx::Class specific connection attributes> are recommended as a minimum for MySQL:
-
-\begin{frame}[fragile]{MySQL Connection attributes}
-\begin{lstlisting}
-    mysql_enable_utf8 => 1,
-    set_strict_mode => 1,
-\end{lstlisting}
-\end{frame}
-
-NOTE: we no longer recommend the use of 
-\verb|on_connect_call =>'set_strict_mode'| since that also forces MySQL's 
-\href{https://dev.mysql.com/doc/refman/5.0/en/sql-mode.html#sqlmode\_only\_full\_group\_by}{ONLY\_FULL\_GROUP\_BY} mode which prevents us from using GROUP BY on PK columns which is a great performance boost for PostgreSQL.
-
-PostgreSQL databases should be created with UT8 encoding, for example:
-
-\begin{frame}[fragile]{Creating PostgreSQL database}
-\begin{lstlisting}
-    createdb -E UTF8 my_shop_db
-\end{lstlisting}
-\end{frame}
-
-The following L<Connection attributes|DBIx::Class::Storage::DBI/DBIx::Class specific connection attributes> are recommended as a minimum for PostgreSQL:
-
-\begin{frame}[fragile]{PostgreSQL Connection attributes}
-\begin{lstlisting}
-    pg_enable_utf8 => 1,
-    on_connect_do  => 'SET client_min_messages=WARNING;',
-\end{lstlisting}
-\end{frame}
-
 \subsubsection{New Project}
 
 For new projects we recommend to write the schema first.
