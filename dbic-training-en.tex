@@ -1718,15 +1718,14 @@ hashref syntax should be used.
 \begin{tabular}{l | l}
 Given & Will Generate \\
 \hline
-\verb|'colA'| & ORDER BY colA \\ 
-\verb|[ 'colA', 'colB' ]| & ORDER BY colA, colB \\
-\verb|{ -asc => 'colA' }| & ORDER BY colA ASC \\
-\verb|{ -desc => 'colB' }| & ORDER BY colB DESC \\
-\verb|{ -asc => [ 'colA', 'colB' ] }| & ORDER BY colA ASC, colB ASC \\
-\verb|{ -asc  => 'colA' }, { -desc => [ 'colB' ] }, { -asc  => [ 'colC', 'colD' ] }|
-& ORDER BY colA ASC,
-     colB DESC,
-     colC ASC, colD ASC \\
+\footnotesize{\verb|'colA'|                         } & \footnotesize{\verb|ORDER BY colA|              } \\
+\footnotesize{\verb|[ 'colA', 'colB' ]|             } & \footnotesize{\verb|ORDER BY colA, colB|        } \\
+\footnotesize{\verb|{ -asc => 'colA' }|             } & \footnotesize{\verb|ORDER BY colA ASC|          } \\
+\footnotesize{\verb|{ -desc => 'colB' }|            } & \footnotesize{\verb|ORDER BY colB DESC|         } \\
+\footnotesize{\verb|{ -asc => [ 'colA', 'colB' ] }| } & \footnotesize{\verb|ORDER BY colA ASC, colB ASC|} \\
+\footnotesize{\verb|[ { -asc  => 'colA' },|           } &   \footnotesize{\verb|ORDER BY colA ASC,|        } \\
+\footnotesize{\verb|  { -desc => [ 'colB' ] },|       } &   \footnotesize{\verb|  colB DESC,|              } \\
+\footnotesize{\verb|  { -asc  => [ 'colC', 'colD' ] } ]|} & \footnotesize{\verb|  colC ASC, colD ASC|      } \\
 \end{tabular}
 \end{table}
 \end{frame}
