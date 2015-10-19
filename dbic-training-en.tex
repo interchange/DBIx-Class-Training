@@ -286,13 +286,10 @@ Write Schema first
 \subsection{Exercise: dbicdump}
 \begin{frame}[fragile]{dbicdump Exercise}
 \begin{lstlisting}
-# clone training repository
-git clone \
-  https://github.com/interchange/DBIx-Class-Training.git
-cd DBIx-Class-Training
+# make sure you are in the right directory
+cd ~/DBIx-Class-Training/TravelDance
 
 # deploy Sqlite database
-cd TravelDance
 ./bin/db-deploy
 
 # explore
@@ -306,7 +303,7 @@ $ sqlite3 traveldance.db
 SQLite version 3.8.11.1 2015-07-29 20:00:57
 Enter ".help" for usage hints.
 sqlite> .tables
-countries  visitedplaces  users
+countries  places_visited  users
 sqlite> .schema countries
 CREATE TABLE countries (
   country_iso_code char(2) NOT NULL,
