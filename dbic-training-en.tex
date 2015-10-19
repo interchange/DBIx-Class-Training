@@ -461,7 +461,7 @@ for Result and ResultSet classes and loads them into the schema.
 \begin{itemize}
 \item Need one result class for each table
 \item Country => countries
-\item PlaceVisited => places_visited
+\item PlaceVisited => places\_visited
 \item User => users
 \end{itemize}
 \end{frame}
@@ -1645,8 +1645,8 @@ appropriately.
 
 In the following query we join country in order to search by country name
 but we do not include any columns from the country table in the
-result. Using prefetch on places_visited means that all columns from the Location
-class will be available via the places_visited accessor accessor for each user
+result. Using prefetch on places\_visited means that all columns from the Location
+class will be available via the places\_visited accessor accessor for each user
 object returned.
 
 \begin{frame}[fragile]{prefetch}
@@ -1834,7 +1834,7 @@ my $rs = $schema->resultset('Location')->search(
 
 \subsection{Correlated Subqueries}
 
-We want a list of all users complete with a count of places_visited for each. The
+We want a list of all users complete with a count of places\_visited for each. The
 obvious approach is to use a join:
 
 \begin{frame}[fragile]{Correlated Subqueries}
@@ -1861,7 +1861,7 @@ Depending on database engine, COUNT’s that aren’t COUNT(*) tend to be slow
 as they do table scans. 
 This is hard to chain since we've introduced JOIN and GROUP BY and collapsed
 COUNTs might produce unexpected results. 
-We cannot add other interesting data from the places_visited in the same query
+We cannot add other interesting data from the places\_visited in the same query
 (such as date of most recent visit).
 
 \subsubsection{Correlated subqueries in the traditional way}
@@ -2037,7 +2037,7 @@ CAVEAT: if you do something like
 \verb|$user->create_related('places_visited', [{...}])|
 on a User object from a resultset that has had with\_location\_count
 previously called on it then when you subsequently call location\_count on
-the User object the count will not include the extra places_visited you just
+the User object the count will not include the extra places\_visited you just
 added. A new search will be needed to correct the count in this case.
 
 \section{Relationships}
@@ -2063,7 +2063,7 @@ One side of the relationship is always a \verb|belongs_to| relationship
 where the calling class stores the stores the foreign class’s primary key in
 one (or more) of the calling class columns.
 
-In our example schema every user can have zero, one or many places_visited and
+In our example schema every user can have zero, one or many places\_visited and
 each Location \verb|belongs_to| a single User so we have the following column and
 relationship defined in the Location class: 
  
@@ -2094,7 +2094,7 @@ primary_column users_id => {
 \end{lstlisting}
 \end{frame}
 
-And since we expect each user to have many places_visited we define the relationship as a \verb|has_many|:
+And since we expect each user to have many places\_visited we define the relationship as a \verb|has_many|:
 
 \begin{frame}[fragile]{VisitedPlaces Relationship}
 \begin{lstlisting}
@@ -2183,7 +2183,7 @@ has_many
 
 \subsubsection{Custom join conditions}
 
-All places_visited visited before 1st January 2000.
+All places\_visited visited before 1st January 2000.
 
 \begin{frame}[fragile]{Custom join conditions}
 \begin{lstlisting}
@@ -2496,7 +2496,7 @@ This causes a number of problems:
 they do table scans.
 \item This is hard to chain since we've introduced JOIN and GROUP BY and
 collapsed COUNTs might produced unexpected results.
-\item We cannot add other interesting data from the places_visited in the same query (such as date of most recent visit).
+\item We cannot add other interesting data from the places\_visited in the same query (such as date of most recent visit).
 \end{itemize}
 
 \begin{frame}[fragile]{CorrelateRelationship}
