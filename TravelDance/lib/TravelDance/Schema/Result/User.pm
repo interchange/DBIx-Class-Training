@@ -200,25 +200,25 @@ column last_modified => {
 
 =head1 RELATIONSHIPS
 
-=head2 locations
+=head2 places_visited
 
 Type: has_many
 
-Related object: L<TravelDance::Schema::Result::Location>
+Related object: L<TravelDance::Schema::Result::PlaceVisited>
 
 =cut
 
-has_many locations => "TravelDance::Schema::Result::Location", "users_id";
+has_many places_visited => "TravelDance::Schema::Result::PlaceVisited", "users_id";
 
 =head2 countries
 
 Type: many_to_many
 
-Composing relationships: L</locations> -> user
+Composing relationships: L</places_visited> -> user
 
 =cut
 
-many_to_many countries => "locations", "country";
+many_to_many countries => "places_visited", "country";
 
 =head1 METHODS
 

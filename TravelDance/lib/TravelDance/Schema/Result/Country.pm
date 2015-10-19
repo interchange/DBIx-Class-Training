@@ -44,27 +44,27 @@ column name => { data_type => "varchar", size => 255 };
 
 =head1 RELATIONSHIPS
 
-=head2 locations
+=head2 places
 
 Type: has_many
 
-Related object: L<TravelDance::Schema::Result::Location>
+Related object: L<TravelDance::Schema::Result::PlaceVisited>
 
 =cut
 
 has_many
-  locations => "TravelDance::Schema::Result::Location",
+  places => "TravelDance::Schema::Result::PlaceVisited",
   'country_iso_code';
 
 =head2 users
 
 Type: many_to_many
 
-Composing relationships: L</locations> -> user
+Composing relationships: L</places> -> user
 
 =cut
 
-many_to_many users => "locations", "user";
+many_to_many users => "places", "user";
 
 =head1 METHODS
 

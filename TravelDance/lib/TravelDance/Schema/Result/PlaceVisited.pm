@@ -1,8 +1,8 @@
-package TravelDance::Schema::Result::Location;
+package TravelDance::Schema::Result::PlaceVisited;
 
 =head1 NAME
 
-TravelDance::Schema::Result::Location
+TravelDance::Schema::Result::PlaceVisited
 
 =head1 DESCRIPTION
 
@@ -27,28 +27,15 @@ use TravelDance::Schema::Candy -components =>
 
 =head1 ACCESSORS
 
-=head2 locations_id
+=head2 place_id
 
 Primary key.
 
 =cut
 
-primary_column locations_id => {
+primary_column place_id => {
     data_type         => "integer",
     is_auto_increment => 1,
-};
-
-=head2 home_location
-
-Whether this location is where the related User lives.
-
-Boolean, defaults to 0 (false);
-
-=cut
-
-column home_location => {
-    data_type     => 'boolean',
-    default_value => 0,
 };
 
 =head2 address
