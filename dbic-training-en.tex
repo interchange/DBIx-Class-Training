@@ -249,8 +249,6 @@ NOTE: we no longer recommend the use of
 \verb|on_connect_call =>'set_strict_mode'| since that also forces MySQL's 
 \href{https://dev.mysql.com/doc/refman/5.0/en/sql-mode.html#sqlmode\_only\_full\_group\_by}{ONLY\_FULL\_GROUP\_BY} mode which prevents us from using GROUP BY on PK columns which is a great performance boost for PostgreSQL.
 
-=head1 PostgreSQL
-
 PostgreSQL databases should be created with UT8 encoding, for example:
 
 \begin{frame}[fragile]{Creating PostgreSQL database}
