@@ -335,10 +335,10 @@ Now check the files in \verb|./mylib| ...
 
 \begin{frame}[fragile]{dbicdump Exercise: Create schema from database}
 \begin{lstlisting}
-# add a column to locations table:
+# add a column to countries table:
 
 sqlite> 
-alter table locations add column latitude float(20);
+alter table countries add column capital varchar(255);
 
 # run dbicdump again
 
@@ -346,7 +346,7 @@ dbicdump -o dump_directory=./mylib \
     TravelDance::MySchema dbi:SQLite:traveldance.db
 
 # Check for the new column:
-./mylib/TravelDance/MySchema/Result/Location.pm 
+./mylib/TravelDance/MySchema/Result/Country.pm
 
 \end{lstlisting}
 \end{frame}
