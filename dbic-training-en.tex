@@ -1965,15 +1965,16 @@ This time we'll also include the date of the latest trip:
 \begin{frame}[fragile]{Helper::ResultSet::CorrelateRelationship}
 \begin{lstlisting}
 my $user_rset = resultset('User');
-$user_rset->search(
-    undef,
+$user_rset->search( undef,
     {
       '+columns' => {
-          location_count => $user_rset->correlate('locations')
-                               ->count_rs->as_query,
-          latest_trip => $user_rset->correlate('locations')
-                               ->get_column('visited')
-                               ->max_rs->as_query,
+          location_count =>
+              $user_rset->correlate('locations')
+                        ->count_rs->as_query,
+          latest_trip =>
+              $user_rset->correlate('locations')
+                        ->get_column('visited')
+                        ->max_rs->as_query,
       },
     }
 );
