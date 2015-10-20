@@ -1974,7 +1974,7 @@ proxy_resultset_method 'places_visited_count';
 \end{lstlisting}
 \end{frame}
 
-Now if places_visited\_count is already cached via the with\_places_visited\_count
+Now if places\_visited\_count is already cached via the with\_places\_visited\_count
 method on the User resultset then that value is returned. If not then the
 resultset method is called immediately so that the data is added to the user
 object. Now we can always call:
@@ -1982,14 +1982,14 @@ object. Now we can always call:
 \verb|$user->places_visited_count|
 
 and we don't have to worry about whether or not we already called the
-with\_places_visited\_count method on the resultset. From a performance viewpoint
+with\_places\_visited\_count method on the resultset. From a performance viewpoint
 (hitting the db) you should still remember to call the resultset method on
 your User resultsets if using search. 
 
 CAVEAT: if you do something like 
 \verb|$user->create_related('places_visited', [{...}])|
-on a User object from a resultset that has had with\_places_visited\_count
-previously called on it then when you subsequently call places_visited\_count on
+on a User object from a resultset that has had with\_places\_visited\_count
+previously called on it then when you subsequently call places\_visited\_count on
 the User object the count will not include the extra places\_visited you just
 added. A new search will be needed to correct the count in this case.
 
