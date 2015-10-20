@@ -7,3 +7,4 @@ requires "DBIx::Class::Schema::Loader"   => "0";
 requires "DBIx::Class::TimeStamp"        => "0";
 requires "Locale::SubCountry"            => "0";
 requires "DBIx::Class::Schema::Config"   => "0";
+requires "DBIx::Class::DeploymentHandler" => "0";
