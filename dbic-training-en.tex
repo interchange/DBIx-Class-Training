@@ -361,16 +361,21 @@ dbicdump -o dump_directory=./mylib \
 
 \begin{frame}{DBIC Classes}
 \begin{itemize}
-\item Two mandatory types of class
-\item One schema class
+\item One \emph{schema} class
 \begin{itemize}
 \item TravelDance::Schema
 \end{itemize}
-\item One result class for each source ( table, view, SQL fragment, etc )
+\item One \emph{result} class for each source ( table, view, SQL fragment, etc )
 \begin{itemize}
 \item TravelDance::Schema::Result::Country
 \item TravelDance::Schema::Result::PlaceVisited
 \item TravelDance::Schema::Result::User
+\end{itemize}
+\item One \emph{result set} class for each source ( table, view, SQL fragment, etc )
+\begin{itemize}
+\item TravelDance::Schema::ResultSet::Country
+\item TravelDance::Schema::ResultSet::PlaceVisited
+\item TravelDance::Schema::ResultSet::User
 \end{itemize}
 \end{itemize}
 \end{frame}
