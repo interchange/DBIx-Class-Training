@@ -1479,11 +1479,8 @@ Sometimes you need to be able to override the default source table alias especia
 \subsection{Columns returned}
 \begin{frame}[fragile]{columns}
 
-Restrict the list of columns to be returned:
+The \verb|columns| operator restricts the list of columns to be returned:
 
-\begin{lstlisting}
-Value: \@columns | \%columns | $column
-\end{lstlisting}
 
 Array reference:
 
@@ -1554,7 +1551,7 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
-columns: Using database functions or stored procedures
+\subsubsection{Using database functions or stored procedures}
 
 \begin{frame}[fragile]{columns: Using database functions or stored
     procedures}
@@ -1571,11 +1568,12 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
-+columns
+\subsubsection{Add columns to current selection}
 
 \begin{frame}[fragile]{+columns}
 
-Works the same as columns but adds columns to the current selection.
+The \verb|+columns| operator allows you to add columns to the current
+selection.
 
 \begin{lstlisting}
 my $rs = $schema->resultset('User')->search(
