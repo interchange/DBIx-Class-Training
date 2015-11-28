@@ -1511,8 +1511,8 @@ my $rs = $schema->resultset('User')->search(
 \end{lstlisting}
 \end{frame}
 
-If the alias used (firstname/lastname in the example) does not correspond to
-an existing column then it must be accessed via:
+If the alias used (\verb|firstname|/\verb|lastname| in the example) does not correspond to
+an existing column then it must be accessed via the \verb|get_column| method:
 
 \begin{lstlisting}
 $user->get_column('firstname');
@@ -2535,7 +2535,7 @@ results\_exists:
 An alternative way to check if the resultset has data using the EXISTS SQL function. Possibly lighter-weight than using count.
 
 \begin{lstlisting}
-$rs->search(...)->results_exist
+$rs->search(...)->results_exists
 \end{lstlisting}
 \end{frame}
 
